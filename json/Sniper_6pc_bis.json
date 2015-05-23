@@ -1,6 +1,6 @@
 {
-	"TechBonus": 2036.496,
-	"RangedBonus": 1408.533,
+	"TechBonus": 2055.32,
+	"RangedBonus": 1427.85,
 	"CritChance": 0.2705,
 	"Surge": 0.694,
 	"Alacrity": 0.0158,
@@ -13,8 +13,8 @@
 	"SA_proc": 890,
 	"adrenal_amt": 750,
 	"pc2": 1,
-	"pc4": 0,
-	"pc6": 0,
-	"old2pc": 1,
-	"old4pc": 1
+	"pc4": 1,
+	"pc6": 1,
+	"old2pc": 0,
+	"old4pc": 0
 }

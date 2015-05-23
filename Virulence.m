@@ -8,15 +8,11 @@ classdef Virulence < BaseSimulator
     
     methods
         function obj=Virulence(z)
+            if(nargin<1)
+                z='Sniper';
+            end
             if(isstruct(z))
-                obj.fresh_abilities=z;
-                
-                
-                obj.abilities=obj.fresh_abilities.abilities;
-                obj.dots=obj.fresh_abilities.dots;
-                obj.procs=obj.fresh_abilities.procs;
-                obj.buffs=obj.fresh_abilities.buffs;
-            
+                LoadAbilities_(obj,z);
             elseif(ischar(z))
                 if(ismember(varargin,'Gunslinger'))
                     LoadAbilities(obj,'json/DirtyFighting.json')
@@ -76,11 +72,11 @@ classdef Virulence < BaseSimulator
 %%%%%%%%%%%%%%%%
 %%% ABILITIES
 %%%%%%%%%%%%%%%%
-        function UseCorrosiveGrenade(obj)
-            ApplyDot(obj,'CG',obj.abilities.cg);
+        function [isCast,CDLeft]=UseCorrosiveGrenade(obj)
+            [isCast,CDLeft]=ApplyDot(obj,'CG',obj.abilities.cg);
         end
-        function UseCorrosiveDart(obj)
-            ApplyDot(obj,'CD',obj.abilities.cd);
+        function [isCast,CDLeft]=UseCorrosiveDart(obj)
+            [isCast,CDLeft]=ApplyDot(obj,'CD',obj.abilities.cd);
         end
         function dr=CalculateBossDR(obj,~)
             extra_ap=0.0;
@@ -89,24 +85,24 @@ classdef Virulence < BaseSimulator
                 extra_ap=0.15;
             end
             ar=obj.boss_armor;
-            ap=obj.armor_pen;
+            ap=obj.raid_armor_pen+obj.armor_pen;
             
             dr=ar*(1-ap-extra_ap)/(ar*(1-ap-extra_ap)+240*60+800);
         end
-        function UseWeakeningBlast(obj)
-           ApplyInstantCast(obj,obj.abilities.wb);
+        function [isCast,CDLeft]=UseWeakeningBlast(obj)
+           [isCast,CDLeft]=ApplyInstantCast(obj,obj.abilities.wb);
         end
-        function UseTakedown(obj)
-            ApplyInstantCast(obj,obj.abilities.td);
+        function [isCast,CDLeft]=UseTakedown(obj)
+            [isCast,CDLeft]=ApplyInstantCast(obj,obj.abilities.td);
         end
-        function UseLethalShot(obj)
-            ApplyCastAbilities(obj,obj.abilities.ls_w);
+        function [isCast,CDLeft]=UseLethalShot(obj)
+            [isCast,CDLeft]=ApplyCastAbilities(obj,obj.abilities.ls_w);
         end
-        function UseCull(obj)
-            ApplyChanneledAbility(obj,obj.abilities.cull);
+        function [isCast,CDLeft]=UseCull(obj)
+            [isCast,CDLeft]=ApplyChanneledAbility(obj,obj.abilities.cull);
         end
-        function UseSeriesOfShots(obj)
-            ApplyChanneledAbility(obj,obj.abilities.sos);
+        function [isCast,CDLeft]=UseSeriesOfShots(obj)
+           [isCast,CDLeft]= ApplyChanneledAbility(obj,obj.abilities.sos);
         end
 %%%%%%%%%%%%%%%%%
 %%% PUB ABILITIES
@@ -117,26 +113,26 @@ classdef Virulence < BaseSimulator
         function UseIllegalMods(obj)
            obj.UseTargetAcquired('Illegal Mods'); 
         end
-        function UseShrapBomb(obj)
-            obj.UseCorrosiveGrenade();
+        function [isCast,CDLeft]=UseShrapBomb(obj)
+            [isCast,CDLeft]=obj.UseCorrosiveGrenade();
         end
-        function UseVitalShot(obj)
-            obj.UseCorrosiveDart()
+        function [isCast,CDLeft]=UseVitalShot(obj)
+            [isCast,CDLeft]=obj.UseCorrosiveDart();
         end
-        function UseHemorrhagingBlast(obj)
-           obj.UseWeakeningBlast()
+        function [isCast,CDLeft]=UseHemorrhagingBlast(obj)
+           [isCast,CDLeft]=obj.UseWeakeningBlast();
         end
-        function UseQuickdraw(obj)
-            obj.UseTakedown();
+        function [isCast,CDLeft]=UseQuickdraw(obj)
+            [isCast,CDLeft]=obj.UseTakedown();
         end
-        function UseDirtyBlast(obj)
-            obj.UseLethalShot();
+        function [isCast,CDLeft]=UseDirtyBlast(obj)
+            [isCast,CDLeft]=obj.UseLethalShot();
         end
-        function UseWoundingShots(obj)
-            obj.UseCull();
+        function [isCast,CDLeft]=UseWoundingShots(obj)
+            [isCast,CDLeft]=obj.UseCull();
         end
-        function UseSpeedShot(obj)
-            obj.UseSeriesOfShots();
+        function [isCast,CDLeft]=UseSpeedShot(obj)
+            [isCast,CDLeft]=obj.UseSeriesOfShots();
         end
         
         function [mhd,mhh,mhc,ohd,ohh,ohc] = CalculateDamage(obj,t,it,autocrit)
@@ -219,6 +215,52 @@ classdef Virulence < BaseSimulator
             
             
         end
+        function DOTCheck(obj,t)
+           fn=fieldnames(obj.dots);
+           for i = 1:size(fn,1)
+              dot = fn{i};
+              tn=obj.dots.(dot).NextTick;
+              if(tn>0 && tn<=t) 
+                    it=obj.abilities.(obj.dots.(dot).it);
+                    [mhd,mhh,mhc]=CalculateDamage(obj,tn,it);
+                    AddDamage(obj, {obj.dots.(dot).NextTick,it.name,mhd,mhc,mhh},it);
+                    if(strcmp(dot,'CD') && rand()<0.15)
+                        [mhd,mhh,mhc]=CalculateDamage(obj,tn,it);
+                        AddDamage(obj,{tn,it.name,mhd,mhc,mhh},it);
+                    end
+                    if(t>=obj.dots.(dot).Expire)
+                        obj.dots.(dot).NextTick=-1;
+                    else
+                        obj.dots.(dot).NextTick=tn+it.int*(1-obj.dots.(dot).Ala);
+                    end
+              end
+           end
+        end 
+        function [isCast,CDLeft]=ApplyDot(obj,dname,it)
+            [isCast,CDLeft]=isAvailable(obj,it);
+            if(~isCast)
+                return;
+            end
+            t=obj.nextCast;
+            obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
+            DOTCheck(obj,t);
+            [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
+            AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
+            %double tick chance on CD
+            if(strcmp(dname,'CD') && rand()<0.15)
+                [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
+                AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
+            end
+            obj.activations{end+1}={t,it.name};
+            obj.dots.(dname).Ala=obj.stats.Alacrity;
+            obj.dots.(dname).LastUsed=t;
+            obj.dots.(dname).NextTick=t+it.int*(1-obj.stats.Alacrity);
+            obj.dots.(dname).Expire=t+it.dur*(1-obj.stats.Alacrity);
+            obj.dots.(dname).WExpire=t+(it.dur+5)*(1-obj.stats.Alacrity);
+            GCD=1.5*(1-obj.stats.Alacrity);
+            DOTCheck(obj,t+GCD);
+            obj.nextCast=t+GCD;
+        end
           function AddDamage(obj,dmg,it)
             if(it.dmg_type==3 )
                 if(obj.buffs.WB.LastUsed+obj.buffs.WB.Dur>dmg{1}...
@@ -233,6 +275,7 @@ classdef Virulence < BaseSimulator
                      dmg{3}=dmg{3}*(1-CalculateBossDR(obj,it));
              end
             if(obj.total_damage<obj.total_HP)
+            %if(true)
                 if(dmg{4}>0)
                     obj.crits=obj.crits+1;
                 end

@@ -1,4 +1,4 @@
-function [r,dps]=CullRotation(rotation,loops,pub)
+function [r,dps]=MMRotation(rotation,loops,pub)
 if(nargin<2)
     loops=1;
 end
@@ -10,19 +10,18 @@ maxDPS=0;
 dps=zeros(1,loops);
 strl=0;
 if(pub)
-    data=loadjson('json/DirtyFighting.json');
-     stats=loadjson('json/Gunslinger_old4pc_bis.json');
+    data=loadjson('json/Sharpshooter.json');
+     stats=loadjson('json/Gunslinger_6pc_bis.json');
 %    stats=loadjson('json/LunaStats.json');
 else
-    data=loadjson('json/Virulence.json');
-    stats=loadjson('json/Sniper_old4pc_bis.json');
+    data=loadjson('json/Marksman.json');
+    stats=loadjson('json/Sniper_6pc_bis.json');
 end
     for i = 1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
         %a=DFRotationClass();
 
-        a=Virulence(data);
-        a.raid_armor_pen=0.2;
+        a=Marksman(data);
         a.stats=stats;
         a.UseLazeTarget();
         for j = 1:size(rotation)
@@ -31,36 +30,38 @@ end
                 a.UseRifleShot();
             elseif(strcmp(rotation{j},'Overload Shot'))
                 a.UseRifleShot();
-            elseif(strcmp(txt,'Lethal Shot')||strcmp(txt,'Dirty Blast'))
-                a.UseLethalShot();
-            elseif(strcmp(txt,'Cull')||strcmp(txt,'Wounding Shots'))
-                [isCast,CDLeft]=a.UseCull();
+            elseif(strcmp(txt,'Penetrating Blasts')||strcmp(txt,'Penetrating Rounds'))
+                [isCast,CDLeft]=a.UsePenetratingBlasts();
                 if(~isCast)
-                    a.activations{end+1}={a.nextCast,'Delayed Cull'};
+                    %fprintf('delaying PB %.1f\n',CDLeft)
+                     a.activations{end+1}={a.nextCast,'Delayed PB'};
                     a.AddDelay(CDLeft);
-                    a.UseCull();
+                    [isCast,CDLeft]=a.UsePenetratingBlasts();
                 end
-                %a.AddDelay(0.2);
+%                a.AddDelay(0.2);
+            elseif(strcmp(txt,'Followthrough')||strcmp(txt,'Trickshot'))
+                %fprintf('ablt %.0f\n',j)
+                [isCast,CDLeft]=a.UseFollowthrough();
             elseif(strcmp(txt,'Takedown')||strcmp(txt,'Quickdraw'))
                 a.UseTakedown();
-            elseif(strcmp(txt,'Corrosive Grenade')||strcmp(txt,'Shrap Bomb'))
-                a.UseCorrosiveGrenade();
+            elseif(strcmp(txt,'Ambush')||strcmp(txt,'Aimed Shot'))
+                [isCast,CDLeft]=a.UseAmbush();
+                a.AddDelay(0.0);
+                if(~isCast)
+                    a.activations{end+1}={a.nextCast,'Delayed AMB'};
+                    a.AddDelay(CDLeft);
+                    a.UseAmbush();
+                    %fprintf('delaying Ambush %.1f\n',CDLeft)
+                     
+                end
+%                a.AddDelay(0.2);
             elseif(strcmp(txt,'Corrosive Dart')||strcmp(txt,'Vital Shot'))
                 a.UseCorrosiveDart();
-            elseif(strcmp(txt,'Series of Shots')||strcmp(txt,'Speed Shot'))
-                [isCast,CDLeft]=a.UseSeriesOfShots();
-                if(~isCast)
-                    a.activations{end+1}={a.nextCast,'Delayed SoS'};
-                    a.AddDelay(CDLeft);
-                    a.UseSeriesOfShots();
-                end
-            elseif(strcmp(txt,'Weakening Blast')||strcmp(txt,'Hemorrhaging Blast'))
-                [isCast,CDLeft]=a.UseWeakeningBlast();
-                if(~isCast)
-                    a.activations{end+1}={a.nextCast,'Delayed WB'};
-                    a.AddDelay(CDLeft);
-                    a.UseSeriesOfShots();
-                end
+            elseif(strcmp(txt,'Snipe')||strcmp(txt,'Charged Burst'))
+                a.UseSnipe();
+ %               a.AddDelay(0.1);
+            elseif(strcmp(txt,'Sniper Volley')||strcmp(txt,'Burst Volley'))
+                a.UseSniperVolley()
             elseif(strcmp(txt,'Laze Target') || strcmp(txt,'Smuggler''s Luck'))
                 a.UseLazeTarget();
             elseif(strcmp(txt,'Illegal Mods') || strcmp(txt,'Target Acquired'))

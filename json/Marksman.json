@@ -1,0 +1,216 @@
+{
+	"abilities": {
+		"sn": {
+			"c": 1.74,
+			"Sm": 0.174,
+			"Sx": 0.174,
+			"Sh": 3185,
+			"Am": 0.16,
+			"w": 1,
+			"mult": 1.05,
+			"cb": 0.04,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 2,
+			"ct": 1.5,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Snipe",
+			"dmg_type": 1,
+			"callback": "SNCallback",
+			"id": "snipe",
+			"CD": 0
+		},
+		"pb": {
+			"c": 0.847,
+			"Sm": 0.085,
+			"Sx": 0.085,
+			"Sh": 3185,
+			"Am": -0.44,
+			"w": 1,
+			"mult": 1.05,
+			"cb": 0.15,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 3,
+			"ct": 2,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Penetrating Blasts",
+			"dmg_type": 1,
+			"ticks": 5,
+			"id": "penblast",
+			"CD": 12
+		},
+		"td": {
+			"c": 2.51,
+			"Sm": 0.251,
+			"Sx": 0.251,
+			"Sh": 3185,
+			"Am": 0.67,
+			"w": 1,
+			"mult": 1,
+			"cb": 0.15,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Takdedown",
+			"dmg_type": 1,
+			"id": "takedown",
+			"CD": 12
+		},
+		"ft": {
+			"c": 1.97,
+			"Sm": 0.192,
+			"Sx": 0.192,
+			"Sh": 3185,
+			"Am": 0.28,
+			"w": 0,
+			"mult": 1,
+			"cb": 0.04,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Followthrough",
+			"dmg_type": 1,
+			"id": "ft",
+			"CD": 0
+		},
+		"amb": {
+			"c": 3.684,
+			"Sm": 0.37,
+			"Sx": 0.37,
+			"Sh": 3185,
+			"Am": 1.36,
+			"w": 1,
+			"mult": 1,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 2,
+			"ct": 2,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Ambush",
+			"dmg_type": 1,
+			"armor_pen": 0.2,
+			"callback": "AMBCallback",
+			"id": "ambush",
+			"CD": 12
+		},
+		"cd": {
+			"c": 0.3075,
+			"Sm": 0.03075,
+			"Sx": 0.03075,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1.2,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 4,
+			"ct": 0,
+			"int": 3,
+			"dur": 18,
+			"dmg_type": 3,
+			"id": "dart",
+			"CD": 0,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "Corrosive Dart"
+		},
+		"rs": {
+			"c": 0.5,
+			"Sm": 0,
+			"Sx": 0,
+			"Sh": 3185,
+			"Am": -0.5,
+			"w": 1,
+			"mult": 1,
+			"cb": 0.1,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 0.9,
+			"raid_mult": 1.05,
+			"name": "Rifle Shot",
+			"dmg_type": 1,
+			"id": "rifleshot",
+			"CD": 0
+		}
+	},
+	"dots": {
+		"CD": {
+			"LastUsed": -1,
+			"NextTick": -1,
+			"Expire": -1,
+			"WExpire": -1,
+			"Ala": 1,
+			"it": "cd"
+		}
+	},
+	"buffs": {
+		"TA": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 10
+		},
+		"LT": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 20
+		},
+		"AD": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 15
+		},
+		"BARelic": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 30
+		},
+		"SV": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 15
+		}
+	},
+	"procs": {
+		"FR": {
+			"LastProc": -1,
+			"Dur": 6,
+			"CD": 20
+		},
+		"SA": {
+			"LastProc": -1,
+			"Dur": 6,
+			"CD": 20
+		},
+		"HS": {
+			"LastProc": -1,
+			"Dur": 20,
+			"CD": 0,
+			"Charges": 0
+		},
+		"ZS": {
+			"LastProc": -1,
+			"Dur": 10,
+			"CD": 0,
+			"Charges": 0
+		},
+		"FT": {
+			"LastProc": -1,
+			"Dur": 15,
+			"CD": 30
+		}
+	}
+}

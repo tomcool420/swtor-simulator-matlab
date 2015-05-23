@@ -17,7 +17,9 @@
 			"raid_mult": 1.05,
 			"name": "Lethal Shot",
 			"callback": "LSCallback",
-            "dmg_type": 1
+            "dmg_type": 1,
+            "id": "lethal",
+            "CD": 0
 		},
 		"ls_i": {
 			"c": 0.77,
@@ -35,7 +37,9 @@
 			"base_acc": 1,
 			"raid_mult": 1.12,
 			"name": "Lethal Shot Int",
-            "dmg_type": 3
+            "dmg_type": 3,
+            "id": "lethal_i",
+            "CD": 0
 		},
 		"cg": {
 			"c": 0.3,
@@ -55,10 +59,12 @@
 			"base_acc": 1,
 			"raid_mult": 1.19,
 			"name": "Corrosive Grenade",
-            "dmg_type": 3
+            "dmg_type": 3,
+            "id": "corr_grenade",
+            "CD": 0
 		},
 		"cd": {
-			"c": 0.3,
+			"c": 0.3075,
 			"Sm": 0.03075,
 			"Sx": 0.03075,
 			"Sh": 3185,
@@ -75,7 +81,9 @@
 			"base_acc": 1,
 			"raid_mult": 1.12,
 			"name": "Corrosive Dart",
-            "dmg_type": 3
+            "dmg_type": 3,
+            "id": "corr_dart",
+            "CD": 0
 		},
 		"wb": {
 			"c": 0.153,
@@ -94,7 +102,9 @@
 			"raid_mult": 1.05,
 			"name": "Weakening Blast",
 			"callback": "WBCallback",
-            "dmg_type": 1
+            "dmg_type": 1,
+            "id": "woundingblast",
+            "CD": 15
 		},
 		"td": {
 			"c": 2.51,
@@ -112,7 +122,9 @@
 			"base_acc": 1,
 			"raid_mult": 1.05,
 			"name": "Takedown",
-            "dmg_type": 1
+            "dmg_type": 1,
+            "id": "takedown",
+            "CD": 0
 		},
 		"sos": {
 			"c": 0.93,
@@ -131,7 +143,9 @@
 			"base_acc": 1,
 			"raid_mult": 1.05,
 			"name": "Series of Shots",
-            "dmg_type": 1
+            "dmg_type": 1,
+            "id": "sos",
+            "CD": 12
 		},
 		"cull": {
 			"c": 0.805,
@@ -151,7 +165,9 @@
 			"raid_mult": 1.05,
 			"name": "Cull",
 			"callback": "CullCallback",
-            "dmg_type": 1
+            "dmg_type": 1,
+            "id": "cull",
+            "CD": 9
 		},
 		"rs": {
 			"c": 0.5,
@@ -168,7 +184,9 @@
 			"ct": 0,
 			"base_acc": 0.9,
 			"raid_mult": 1.05,
-            "dmg_type": 1
+            "dmg_type": 1,
+            "id": "rs",
+            "CD": 0
 		},
 		"os": {
 			"c": 1.39,
@@ -185,7 +203,9 @@
 			"ct": 0,
 			"base_acc": 0.9,
 			"raid_mult": 1.05,
-            "dmg_type": 1
+            "dmg_type": 1,
+            "id": "overload",
+            "CD": 0
 		}
 	},
 	"buffs": {
