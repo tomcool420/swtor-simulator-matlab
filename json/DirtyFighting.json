@@ -1,0 +1,259 @@
+{
+	"abilities": {
+		"ls_w": {
+			"c": 0.988,
+			"Sm": 0.099,
+			"Sx": 0.099,
+			"Sh": 3185,
+			"Am": -0.34,
+			"w": 1,
+			"mult": 1.1,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 2,
+			"ct": 1.5,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Dirty Blast",
+			"callback": "LSCallback",
+			"dmg_type": 1
+		},
+		"ls_i": {
+			"c": 0.77,
+			"Sm": 0.077,
+			"Sx": 0.077,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1.1025,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0.15,
+			"ctype": 0,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1.12,
+			"name": "Dirty Blast Int",
+			"dmg_type": 3
+		},
+		"cg": {
+			"c": 0.3,
+			"Sm": 0.027,
+			"Sx": 0.027,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1.05,
+			"cb": 0.1,
+			"sb": 0,
+			"s30": 0.15,
+			"ctype": 4,
+			"ct": 0,
+			"int": 3,
+			"dur": 24,
+			"base_acc": 1,
+			"raid_mult": 1.19,
+			"name": "Shrap Bomb",
+			"dmg_type": 3
+		},
+		"cd": {
+			"c": 0.3,
+			"Sm": 0.03075,
+			"Sx": 0.03075,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1,
+			"cb": 0.1,
+			"sb": 0,
+			"s30": 0.15,
+			"ctype": 4,
+			"ct": 0,
+			"int": 3,
+			"dur": 24,
+			"base_acc": 1,
+			"raid_mult": 1.12,
+			"name": "Vital Shot",
+			"dmg_type": 3
+		},
+		"wb": {
+			"c": 0.153,
+			"Sm": 0.0153,
+			"Sx": 0.0153,
+			"Sh": 3185,
+			"Am": -0.9,
+			"w": 1,
+			"mult": 1,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Hemorrhaging Blast",
+			"callback": "WBCallback",
+			"dmg_type": 1
+		},
+		"td": {
+			"c": 2.51,
+			"Sm": 0.251,
+			"Sx": 0.251,
+			"Sh": 3185,
+			"Am": 0.67,
+			"w": 1,
+			"mult": 1,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Quickdraw",
+			"dmg_type": 1
+		},
+		"sos": {
+			"c": 0.93,
+			"Sm": 0.093,
+			"Sx": 0.093,
+			"Sh": 3185,
+			"Am": -0.38,
+			"w": 1,
+			"mult": 1.1,
+			"cb": 0.1,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 3,
+			"ct": 3,
+			"ticks": 4,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Series of Shots",
+			"dmg_type": 1
+		},
+		"cull": {
+			"c": 0.805,
+			"Sm": 0.081,
+			"Sx": 0.081,
+			"Sh": 3185,
+			"Am": -0.46,
+			"w": 1,
+			"mult": 1.05,
+			"cb": 0.1,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 3,
+			"ct": 3,
+			"ticks": 4,
+			"base_acc": 1,
+			"raid_mult": 1.05,
+			"name": "Wounding Shots",
+			"callback": "CullCallback",
+			"dmg_type": 1
+		},
+		"rs": {
+			"c": 0.5,
+			"Sm": 0,
+			"Sx": 0,
+			"Sh": 3185,
+			"Am": -0.5,
+			"w": 1,
+			"mult": 1,
+			"ctype": 1,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"ct": 0,
+			"base_acc": 0.9,
+			"raid_mult": 1.05,
+			"dmg_type": 1
+		},
+		"os": {
+			"c": 1.39,
+			"Sm": 0.139,
+			"Sx": 0.139,
+			"Sh": 3185,
+			"Am": -0.07,
+			"w": 1,
+			"mult": 1,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 0.9,
+			"raid_mult": 1.05,
+			"dmg_type": 1
+		}
+	},
+	"buffs": {
+		"TA": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 10
+		},
+		"LT": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 20
+		},
+		"AD": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 15
+		},
+		"BARelic": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 30
+		},
+		"WB": {
+			"LastUsed": -1,
+			"Dur": 10
+		}
+	},
+	"dots": {
+		"CG": {
+			"LastUsed": -1,
+			"NextTick": -1,
+			"Expire": -1,
+			"WExpire": -1,
+			"Ala": 1,
+			"it": "cg"
+		},
+		"CD": {
+			"LastUsed": -1,
+			"NextTick": -1,
+			"Expire": -1,
+			"WExpire": -1,
+			"Ala": 1,
+			"it": "cd"
+		},
+		"CM": {
+			"LastUsed": -1,
+			"NextTick": -1,
+			"Expire": -1,
+			"WExpire": -1,
+			"Ala": 1
+		}
+	},
+	"procs": {
+		"FR": {
+			"LastProc": -1,
+			"Dur": 6,
+			"CD": 20
+		},
+		"SA": {
+			"LastProc": -1,
+			"Dur": 6,
+			"CD": 20
+		},
+		"FT": {
+			"LastProc": -1,
+			"Dur": 15,
+			"CD": 30
+		}
+	}
+}
