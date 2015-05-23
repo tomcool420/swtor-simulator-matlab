@@ -10,12 +10,12 @@ maxDPS=0;
 dps=zeros(1,loops);
 strl=0;
 if(pub)
-    data=loadjson('json/DirtyFighting.json');
-     stats=loadjson('json/Gunslinger_old4pc_bis.json');
+    data=json.loadjson('json/DirtyFighting.json');
+     stats=json.loadjson('json/Gunslinger_old4pc_bis.json');
 %    stats=loadjson('json/LunaStats.json');
 else
-    data=loadjson('json/Virulence.json');
-    stats=loadjson('json/Sniper_old4pc_bis.json');
+    data=json.loadjson('json/Virulence.json');
+    stats=json.loadjson('json/Sniper_old4pc_bis.json');
 end
     for i = 1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);

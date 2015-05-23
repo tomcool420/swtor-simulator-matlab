@@ -44,9 +44,9 @@ classdef BaseSimulator <handle
         end
         function LoadAbilities(obj,fname)
             if(size(strfind(fname,'bin')))
-                z=loadubjson(fname);
+                z=json.loadubjson(fname);
             else
-                z=loadjson(fname);
+                z=json.loadjson(fname);
             end
            LoadAbilities_(obj,z);
         end
@@ -227,6 +227,7 @@ classdef BaseSimulator <handle
                      dmg{3}=dmg{3}*(1-CalculateBossDR(obj,it));
             end
             if(obj.total_damage<obj.total_HP)
+            %if(true)
                 if(dmg{4}>0)
                     obj.crits=obj.crits+1;
                 end

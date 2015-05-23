@@ -10,12 +10,12 @@ maxDPS=0;
 dps=zeros(1,loops);
 strl=0;
 if(pub)
-    data=loadjson('json/Sharpshooter.json');
-     stats=loadjson('json/Gunslinger_6pc_bis.json');
+     data=json.loadjson('json/Sharpshooter.json');
+     stats=json.loadjson('json/Gunslinger_6pc_bis.json');
 %    stats=loadjson('json/LunaStats.json');
 else
-    data=loadjson('json/Marksman.json');
-    stats=loadjson('json/Sniper_6pc_bis.json');
+    data=json.loadjson('json/Marksman.json');
+    stats=json.loadjson('json/Sniper_6pc_bis.json');
 end
     for i = 1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
