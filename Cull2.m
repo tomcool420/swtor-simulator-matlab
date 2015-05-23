@@ -1,10 +1,23 @@
-function [a,dps]=Cull2(loops)
+function [a,dps]=Cull2(loops,pub)
+if(nargin<2)
+    pub=0;
+end
 if(nargin<1)
     loops=1;
 end
 dps=zeros(1,loops);
+if(pub)
+    data=loadjson('json/DirtyFighting.json');
+    stats=loadjson('json/Gunslinger_old4pc_bis.json');
+else
+    data=loadjson('json/Virulence.json');
+    stats=loadjson('json/Sniper_old4pc_bis.json');
+end
 for i = 1:loops
-     a=DFRotationClass();
+    a=Virulence(data);
+    a.stats=stats;
+%    a.LoadStats('LunaStats.json');
+%     a=DFRotationClass();
     a.UseLazeTarget();
     a.UseCorrosiveDart();
     a.UseCorrosiveGrenade();
@@ -35,27 +48,44 @@ for i = 1:loops
     a.UseTakedown();
     a.UseCull();
     while(a.total_damage<a.total_HP);
-        a.UseCorrosiveDart();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.UseCorrosiveGrenade();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.UseWeakeningBlast();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        if(a.nextCast>180);a.UseAdrenal();end
-        a.UseCull();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.UseLethalShot();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.UseSeriesOfShots();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.UseTakedown();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.UseCull();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.UseTakedown();
-        if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
-        a.AddDelay(0.3);
-    end
-%     dps(i)=a.total_damage/(a.damage{end}{1});
+        if(a.total_HP-a.total_damage>50000);
+            a.UseCorrosiveDart();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseCorrosiveGrenade();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseWeakeningBlast();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            if(a.nextCast>180);a.UseAdrenal();end
+            a.UseCull();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseLethalShot();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseSeriesOfShots();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseTakedown();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseCull();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseTakedown();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.AddDelay(0.3);
+        else
+            a.UseLethalShot();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseLethalShot();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseLethalShot();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseCull();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseLethalShot();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseLethalShot();
+            if(a.total_damage>a.total_HP);break;end;a.UseLazeTarget();
+            a.UseLethalShot();
+            a.UseTakedown();
+        end
+   end
+    dps(i)=a.total_damage/(a.damage{end}{1});
 end
 end

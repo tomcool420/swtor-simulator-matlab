@@ -7,8 +7,23 @@ classdef Virulence < BaseSimulator
     end
     
     methods
-        function obj=Virulence(varargin)
-            LoadAbilities(obj,'Virulence.json')
+        function obj=Virulence(z)
+            if(isstruct(z))
+                obj.fresh_abilities=z;
+                
+                
+                obj.abilities=obj.fresh_abilities.abilities;
+                obj.dots=obj.fresh_abilities.dots;
+                obj.procs=obj.fresh_abilities.procs;
+                obj.buffs=obj.fresh_abilities.buffs;
+            
+            elseif(ischar(z))
+                if(ismember(varargin,'Gunslinger'))
+                    LoadAbilities(obj,'json/DirtyFighting.json')
+                else
+                    LoadAbilities(obj,'json/Virulence.json')
+                end
+            end
         end
         function WBCallback(obj,t,~)
             obj.buffs.WB.LastUsed=t;
@@ -35,19 +50,25 @@ classdef Virulence < BaseSimulator
 %%%%%%%%%%%%%%%%%%%%%%%
 %%%  BUFFS
 %%%%%%%%%%%%%%%%%%%%%%%
-        function UseTargetAcquired(obj)
+        function UseTargetAcquired(obj,name)
+            if(nargin<2)
+                name='Target Acquired';
+            end
            obj.buffs.TA.LastUsed=obj.nextCast;
            %Take into account the 4pc/old2pc for CD
            baseCD=120-15*obj.stats.old2pc-15*obj.stats.pc4; 
            obj.buffs.AD.Available=obj.nextCast+baseCD*(1-obj.stats.Alacrity);
-           obj.activations{end+1}={obj.nextCast,'Target Acquired'};
+           obj.activations{end+1}={obj.nextCast,name};
         end
-        function UseLazeTarget(obj)
+        function UseLazeTarget(obj,name)
+            if(nargin<2)
+                name='Laze Target';
+            end
            if(obj.nextCast>=obj.buffs.LT.Available)
                obj.autocrit_charges=obj.autocrit_charges+1+obj.stats.pc6;
                obj.buffs.LT.Available=obj.nextCast+60*(1-obj.stats.Alacrity);
                obj.buffs.LT.LastUsed=obj.nextCast;
-               obj.activations{end+1}={obj.nextCast,'Laze Target'};
+               obj.activations{end+1}={obj.nextCast,name};
            else
                %disp('LT is not up yet');
            end
@@ -86,6 +107,36 @@ classdef Virulence < BaseSimulator
         end
         function UseSeriesOfShots(obj)
             ApplyChanneledAbility(obj,obj.abilities.sos);
+        end
+%%%%%%%%%%%%%%%%%
+%%% PUB ABILITIES
+%%%%%%%%%%%%%%%%%
+        function UseSmugglersLuck(obj)
+            obj.UseLazeTarget('Smuggler''s Luck');
+        end
+        function UseIllegalMods(obj)
+           obj.UseTargetAcquired('Illegal Mods'); 
+        end
+        function UseShrapBomb(obj)
+            obj.UseCorrosiveGrenade();
+        end
+        function UseVitalShot(obj)
+            obj.UseCorrosiveDart()
+        end
+        function UseHemorrhagingBlast(obj)
+           obj.UseWeakeningBlast()
+        end
+        function UseQuickdraw(obj)
+            obj.UseTakedown();
+        end
+        function UseDirtyBlast(obj)
+            obj.UseLethalShot();
+        end
+        function UseWoundingShots(obj)
+            obj.UseCull();
+        end
+        function UseSpeedShot(obj)
+            obj.UseSeriesOfShots();
         end
         
         function [mhd,mhh,mhc,ohd,ohh,ohc] = CalculateDamage(obj,t,it,autocrit)
@@ -136,7 +187,7 @@ classdef Virulence < BaseSimulator
                
                ohc = max(autocrit,rand()<(obj.stats.CritChance+it.cb));
                ohh = rand()<(it.base_acc-obj.boss_def+obj.stats.Accuracy-0.3+bonusacc);
-               ohd = (rand()*(ohx-ohn)+ohn)*(1+(s_.Surge+it.sb)*ohc)*ohh;
+               ohd = (rand()*(ohx-ohn)+ohn)*(1+(s_.Surge+it.sb)*ohc)*ohh*0.3;
                if(ohn==0 || ohx==0)
                    ohd=-1;
                end
@@ -167,6 +218,29 @@ classdef Virulence < BaseSimulator
             end
             
             
+        end
+          function AddDamage(obj,dmg,it)
+            if(it.dmg_type==3 )
+                if(obj.buffs.WB.LastUsed+obj.buffs.WB.Dur>dmg{1}...
+                     && obj.buffs.WB.LastUsed>0)
+                     [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,dmg{1},obj.abilities.wb);
+                     AddDamage(obj,{dmg{1},obj.abilities.wb.name,mhd,mhc,mhh},obj.abilities.wb);
+                     if(ohd>=0)
+                        AddDamage(obj,{dmg{1},[obj.abilities.wb.name ' OH'],ohd,ohc,ohh},obj.abilities.wb);
+                     end
+                end
+             elseif(it.dmg_type==1)
+                     dmg{3}=dmg{3}*(1-CalculateBossDR(obj,it));
+             end
+            if(obj.total_damage<obj.total_HP)
+                if(dmg{4}>0)
+                    obj.crits=obj.crits+1;
+                end
+                obj.dmg_effects=obj.dmg_effects+1;
+                obj.total_damage=obj.total_damage+dmg{3};
+                obj.damage{end+1}=dmg;
+                AddToStats(obj,dmg);
+            end
         end
     end
     

@@ -9,7 +9,7 @@ classdef BaseSimulator <handle
         buffs=struct();
         procs=struct();
         activations={};
-        autocrit_charges;
+        autocrit_charges=0;
         autocrit_abilities={};
         autocrit_time_since_proc;
         total_damage=0;
@@ -25,6 +25,8 @@ classdef BaseSimulator <handle
         dmg_effects=0;
         crits=0;
         damage={};
+        out_stats_new=struct();
+        fresh_abilities=struct();
     end
     
     methods
@@ -38,11 +40,30 @@ classdef BaseSimulator <handle
            obj.stats=loadjson(fname);
         end
         function LoadAbilities(obj,fname)
-           l=loadjson(fname);
-           obj.abilities=l.abilities;
-           obj.dots=l.dots;
-           obj.procs=l.procs;
-           obj.buffs=l.buffs;
+            if(size(strfind(fname,'bin')))
+                obj.fresh_abilities=loadubjson(fname);
+            else
+                obj.fresh_abilities=loadjson(fname);
+            end
+           
+           obj.abilities=obj.fresh_abilities.abilities;
+           obj.dots=obj.fresh_abilities.dots;
+           obj.procs=obj.fresh_abilities.procs;
+           obj.buffs=obj.fresh_abilities.buffs;
+        end
+        function RefreshSimulator(obj)
+           obj.abilities=obj.fresh_abilities.abilities;
+           obj.dots=obj.fresh_abilities.dots;
+           obj.procs=obj.fresh_abilities.procs;
+           obj.buffs=obj.fresh_abilities.buffs;
+           obj.total_damage=0;
+           obj.crits=0;
+           obj.damage={};
+           obj.activations={};
+           obj.act_nb;
+           obj.autocrit_charges=0;
+           obj.autocrit_abilities={};
+           obj.autocrit_time_since_proc=-1;
         end
         function UseAdrenal(obj)
             obj.buffs.AD.LastUsed=obj.nextCast;
@@ -84,7 +105,7 @@ classdef BaseSimulator <handle
             AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
             ac=isAutocrit(obj,it);
             if(ohd>=0)
-                AddDamage(obj,{t,['* ' it.name],ohd,ohc,ohh},it);
+                AddDamage(obj,{t,[it.name ' OH'],ohd,ohc,ohh},it);
             end
             if(isfield(it,'callback'))
                 cbfunc=str2func(it.callback);
@@ -112,7 +133,7 @@ classdef BaseSimulator <handle
             [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,obj.nextCast,it);
             AddDamage(obj,{obj.nextCast,it.name,mhd,mhc,mhh},it);
             if(ohd>=0)
-                AddDamage(obj,{t,['* ' it.name],ohd,ohc,ohh},it);
+                AddDamage(obj,{t,[it.name ' OH'],ohd,ohc,ohh},it);
             end
             if(ac==1)
                 obj.autocrit_charges=obj.autocrit_charges-1;
@@ -128,7 +149,7 @@ classdef BaseSimulator <handle
                 [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,t,it,ac);
                 AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
                 if(ohd>=0)
-                    AddDamage(obj,{t,['* ' it.name],ohd,ohc,ohh},it);
+                    AddDamage(obj,{t,[it.name ' OH'],ohd,ohc,ohh},it);
                 end
                 if(isfield(it,'callback'))
                     cbfunc=str2func(it.callback);
@@ -165,14 +186,9 @@ classdef BaseSimulator <handle
         end 
         function AddDamage(obj,dmg,it)
             if(it.dmg_type==3 )
-                if(obj.buffs.WB.LastUsed+obj.buffs.WB.Dur>dmg{1}...
-                     && obj.buffs.WB.LastUsed>0)
-                     [mhd,mhh,mhc]=CalculateDamage(obj,dmg{1},obj.abilities.wb);
-                     AddDamage(obj,{dmg{1},obj.abilities.wb.name,mhd,mhc,mhh},obj.abilities.wb);
-                end
-             elseif(it.dmg_type==1)
+            elseif(it.dmg_type==1)
                      dmg{3}=dmg{3}*(1-CalculateBossDR(obj,it));
-             end
+            end
             if(obj.total_damage<obj.total_HP)
                 if(dmg{4}>0)
                     obj.crits=obj.crits+1;
@@ -191,7 +207,10 @@ classdef BaseSimulator <handle
             extra_ap=0.0;
             ar=obj.boss_armor;
             ap=obj.armor_pen;
-            dr=ar*(1-ap-extra_ap)/(ar*(1-ap-extra_ap)+240*60+800);
+            if(isfield(it,'armor_pen'))
+                extra_ap=it.armor_pen;
+            end
+            dr=ar*(1-min(ap+extra_ap,1))/(ar*(1-min(ap+extra_ap,1))+240*60+800);
         end
         function PrintDamage(obj)
             dmg=obj.damage;
@@ -219,13 +238,13 @@ classdef BaseSimulator <handle
         function PrintDetailedStats(obj)
             PrintStats(obj);
             fprintf('%s\n',repmat('=',1,110));
-            ks=keys(obj.out_stats);
+            ks=fieldnames(obj.out_stats_new);
             fprintf('Ability%s#        d         n     nd        avg n    c    cd           cc       avg c       %%\n',repmat(' ',1,17));
             fprintf('%s\n',repmat('=',1,110)); 
             for i = 1:max(size(ks))
-               k=obj.out_stats(ks{i});
+               k=obj.out_stats_new.(ks{i});
                fprintf('| %-20s: %-5i  %10.1f  %-3i  %9.2f %8.2f  %-3i %9.2f %9.2f%%  %8.2f    %5.1f',...
-                       ks{i},k.hits,k.cd+k.nd,k.hits-k.crits,k.nd,k.nd/(k.hits-k.crits),...
+                       ks{i},k.hits,k.cd+k.nd,k.hits-k.crits-k.misses,k.nd,k.nd/(k.hits-k.crits-k.misses),...
                        k.crits,k.cd,k.crits/k.hits*100,k.cd/k.crits,...
                        (k.cd+k.nd)/obj.total_damage*100);
                fprintf('\n')
@@ -241,11 +260,19 @@ classdef BaseSimulator <handle
         end
         
         function AddToStats(obj,dmg)
-          if(isKey(obj.out_stats,dmg{2}))
-             r=obj.out_stats(dmg{2});
-          else
-             r=struct('hits',0,'crits',0,'cd',0,'nd',0,'misses',0);
-          end
+            str_save=strrep(dmg{2},' ','_');
+%           if(isKey(obj.out_stats,dmg{2}))
+%              r=obj.out_stats(dmg{2});
+%           else
+%              r=struct('hits',0,'crits',0,'cd',0,'nd',0,'misses',0);
+%           end
+          if(isfield(obj.out_stats_new,str_save))
+             r=obj.out_stats_new.(str_save);
+           else
+              r=struct('hits',0,'crits',0,'cd',0,'nd',0,'misses',0);
+           end 
+              
+          % r=struct('hits',0,'crits',0,'cd',0,'nd',0,'misses',0);
           r.hits=r.hits+1;
           if(dmg{5}==0)
               r.misses=r.misses+1;
@@ -258,9 +285,19 @@ classdef BaseSimulator <handle
               end
               %r.hits=r.hits+1;
           end
-          obj.out_stats(dmg{2})=r;
+          obj.out_stats_new.(str_save)=r;
+          %obj.out_stats(dmg{2})=r;
         end
-        
+        function GetSize(this)
+            props = properties(this);
+            totSize = 0;
+            for ii=1:length(props)
+                currentProperty = getfield(this, char(props(ii)));
+                s = whos('currentProperty');
+                totSize = totSize + s.bytes;
+            end
+            fprintf(1, '%d bytes\n', totSize);
+        end
     end
     
 end
