@@ -1,0 +1,211 @@
+{
+	"abilities": {
+		"ts": {
+			"c": 1.72,
+			"Sm": 0.152,
+			"Sx": 0.192,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "Tactical Surge",
+			"dmg_type": 1,
+			"callback": "ProcCallback"
+		},
+		"ss": {
+			"c": 1.77,
+			"Sm": 0.158,
+			"Sx": 0.198,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "Tactical Surge",
+			"dmg_type": 1,
+			"callback": "ProcCallback"
+		},
+		"gut": {
+			"c": 0.95,
+			"Sm": 0.075,
+			"Sx": 0.115,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1.05,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "Gut",
+			"dmg_type": 1
+		},
+		"gutd": {
+			"c": 0.25,
+			"Sm": 0.025,
+			"Sx": 0.025,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1.2,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 4,
+			"ct": 0,
+			"int": 3,
+			"dur": 24,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "Gut (dot)",
+			"dmg_type": 3
+		},
+		"cb": {
+			"c": 0.95,
+			"Sm": 0.075,
+			"Sx": 0.115,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 0,
+			"mult": 1.05,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "Cell Burst",
+			"dmg_type": 1,
+			"charges": 0,
+			"callback": "CBCallback"
+		},
+		"hib": {
+			"c": 1.97,
+			"Sm": 0.197,
+			"Sx": 0.197,
+			"Sh": 3185,
+			"Am": 0.31,
+			"w": 1,
+			"mult": 1.08,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "High Impact Bolt",
+			"dmg_type": 1,
+			"callback": "HIBCallback",
+			"armor_pen": 1
+		},
+		"hs": {
+			"c": 1,
+			"Sm": 0,
+			"Sx": 0,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 1,
+			"mult": 1,
+			"cb": 0.02,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 0.9,
+			"raid_mult": 1,
+			"name": "Hammer Shot",
+			"dmg_type": 1
+		},
+		"ap": {
+			"c": 2.48,
+			"Sm": 0.228,
+			"Sx": 0.268,
+			"Sh": 3185,
+			"Am": 0,
+			"w": 1,
+			"mult": 1,
+			"cb": 0.02,
+			"sb": 0.3,
+			"s30": 0,
+			"ctype": 1,
+			"ct": 0,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"name": "Hammer Shot",
+			"dmg_type": 1
+		}
+	},
+	"dots": {
+		"GUT": {
+			"LastUsed": -1,
+			"NextTick": -1,
+			"Expire": -1,
+			"WExpire": -1,
+			"Ala": 1,
+			"it": "gutd"
+		}
+	},
+	"buffs": {
+		"BF": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 15,
+			"CD": 120
+		},
+		"AD": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 15
+		},
+		"BARelic": {
+			"LastUsed": -1,
+			"Available": 0,
+			"Dur": 30
+		}
+	},
+	"procs": {
+		"FR": {
+			"LastProc": -1,
+			"Dur": 6,
+			"CD": 20
+		},
+		"SA": {
+			"LastProc": -1,
+			"Dur": 6,
+			"CD": 20
+		},
+		"CT": {
+			"LastProc": -1,
+			"Dur": 15,
+			"CD": 30
+		},
+		"AC": {
+			"LastProc": -1,
+			"Dur": 30,
+			"CD": 60
+		},
+		"IA": {
+			"LastProc": -1,
+			"Dur": 30,
+			"CD": 6
+		}
+	}
+}
