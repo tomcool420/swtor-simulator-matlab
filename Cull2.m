@@ -1,10 +1,12 @@
-function [a,dps]=Cull2(loops,pub)
+function [r,dps]=Cull2(loops,pub)
 if(nargin<2)
     pub=0;
 end
 if(nargin<1)
     loops=1;
 end
+maxDPS=0;
+r=0;
 dps=zeros(1,loops);
 if(pub)
     data=loadjson('json/DirtyFighting.json');
@@ -86,6 +88,10 @@ for i = 1:loops
             a.UseTakedown();
         end
    end
-    dps(i)=a.total_damage/(a.damage{end}{1});
+   dps(i)=a.total_damage/(a.damage{end}{1});
+   if(dps(i)>maxDPS)
+       r=a;
+       maxDPS=dps(i);
+   end
 end
 end

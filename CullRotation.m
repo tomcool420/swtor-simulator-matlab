@@ -11,14 +11,14 @@ dps=zeros(1,loops);
 strl=0;
 if(pub)
     data=loadjson('json/DirtyFighting.json');
-%     stats=loadjson('json/Gunslinger_old4pc_bis.json');
-    stats=loadjson('json/LunaStats.json');
+     stats=loadjson('json/Gunslinger_old4pc_bis.json');
+%    stats=loadjson('json/LunaStats.json');
 else
     data=loadjson('json/Virulence.json');
     stats=loadjson('json/Sniper_old4pc_bis.json');
 end
-    parfor i = 1:loops
-        %strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
+    for i = 1:loops
+        strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
         %a=DFRotationClass();
 
         a=Virulence(data);
@@ -57,10 +57,10 @@ end
             
         end
         dps(i)=a.total_damage/(a.damage{end}{1});
-%         if(dps(i)>maxDPS)
-%             r=a;
-%             maxDPS=dps(i);
-%         end
+        if(dps(i)>maxDPS)
+            r=a;
+            maxDPS=dps(i);
+        end
     end
 end
 
