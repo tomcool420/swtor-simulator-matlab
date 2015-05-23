@@ -3,7 +3,9 @@ classdef Virulence < BaseSimulator
     %   Detailed explanation goes here
     
     properties
-        
+        instant_ls=false;
+        last_instant_ls_used=-1;
+        last_instant_ls_proc=-1;
     end
     
     methods
@@ -14,12 +16,13 @@ classdef Virulence < BaseSimulator
             if(isstruct(z))
                 LoadAbilities_(obj,z);
             elseif(ischar(z))
-                if(ismember(varargin,'Gunslinger'))
+                if(ismember(z,'Gunslinger'))
                     LoadAbilities(obj,'json/DirtyFighting.json')
                 else
                     LoadAbilities(obj,'json/Virulence.json')
                 end
             end
+            obj.autocrit_abilities = {'Cull','Ambush','Engineering Probe','Aimed Shot','Wounding Shots','Sabotage Charge'};
         end
         function WBCallback(obj,t,~)
             obj.buffs.WB.LastUsed=t;
@@ -96,7 +99,16 @@ classdef Virulence < BaseSimulator
             [isCast,CDLeft]=ApplyInstantCast(obj,obj.abilities.td);
         end
         function [isCast,CDLeft]=UseLethalShot(obj)
-            [isCast,CDLeft]=ApplyCastAbilities(obj,obj.abilities.ls_w);
+            if(obj.last_instant_ls_proc<obj.nextCast+6 && obj.last_instant_ls_proc>=0)
+                [isCast,CDLeft]=ApplyInstantCast(obj,obj.abilities.ls_w);
+                obj.last_instant_ls_used=obj.nextCast;
+                obj.last_instant_ls_proc=-1;
+            else
+                [isCast,CDLeft]=ApplyCastAbilities(obj,obj.abilities.ls_w);
+            end
+        end
+        function [isCast,CDLeft]=UseOverloadShot(obj)
+            [isCast,CDLeft]=ApplyInstantCast(obj,obj.abilities.os);
         end
         function [isCast,CDLeft]=UseCull(obj)
             [isCast,CDLeft]=ApplyChanneledAbility(obj,obj.abilities.cull);
@@ -104,6 +116,19 @@ classdef Virulence < BaseSimulator
         function [isCast,CDLeft]=UseSeriesOfShots(obj)
            [isCast,CDLeft]= ApplyChanneledAbility(obj,obj.abilities.sos);
         end
+        function [isCast,CDLeft]=UseCoveredEscape(obj)
+            [isCast,CDLeft]= ApplyDot(obj,'CM',obj.abilities.cm);
+        end
+        function [isCast,CDLeft]=UseRifleShot(obj)
+            [isCast,CDLeft]=ApplyInstantCast(obj,obj.abilities.rs);
+        end
+        function UseCrouch(obj)
+            if(obj.last_instant_ls_used<0|| ...
+                obj.nextCast>obj.last_instant_ls_used+6)
+                obj.last_instant_ls_proc=obj.nextCast;
+            end
+        end
+            
 %%%%%%%%%%%%%%%%%
 %%% PUB ABILITIES
 %%%%%%%%%%%%%%%%%
@@ -125,6 +150,7 @@ classdef Virulence < BaseSimulator
         function [isCast,CDLeft]=UseQuickdraw(obj)
             [isCast,CDLeft]=obj.UseTakedown();
         end
+        
         function [isCast,CDLeft]=UseDirtyBlast(obj)
             [isCast,CDLeft]=obj.UseLethalShot();
         end
@@ -139,6 +165,8 @@ classdef Virulence < BaseSimulator
             if(nargin<4)
                 autocrit = false;
             end
+
+            
             if(t>obj.procs.SA.LastProc+obj.procs.SA.CD)
                 if(rand()<0.3)
                     obj.SAprocs=obj.SAprocs+1;
@@ -220,7 +248,7 @@ classdef Virulence < BaseSimulator
            for i = 1:size(fn,1)
               dot = fn{i};
               tn=obj.dots.(dot).NextTick;
-              if(tn>0 && tn<=t) 
+              while(tn>0 && tn<=t) 
                     it=obj.abilities.(obj.dots.(dot).it);
                     [mhd,mhh,mhc]=CalculateDamage(obj,tn,it);
                     AddDamage(obj, {obj.dots.(dot).NextTick,it.name,mhd,mhc,mhh},it);
@@ -233,6 +261,7 @@ classdef Virulence < BaseSimulator
                     else
                         obj.dots.(dot).NextTick=tn+it.int*(1-obj.dots.(dot).Ala);
                     end
+                    tn=obj.dots.(dot).NextTick;
               end
            end
         end 
@@ -264,7 +293,8 @@ classdef Virulence < BaseSimulator
           function AddDamage(obj,dmg,it)
             if(it.dmg_type==3 )
                 if(obj.buffs.WB.LastUsed+obj.buffs.WB.Dur>dmg{1}...
-                     && obj.buffs.WB.LastUsed>0)
+                     && obj.buffs.WB.LastUsed>0 ...
+                     && ~strcmp(it.id,'corr_mine'))
                      [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,dmg{1},obj.abilities.wb);
                      AddDamage(obj,{dmg{1},obj.abilities.wb.name,mhd,mhc,mhh},obj.abilities.wb);
                      if(ohd>=0)

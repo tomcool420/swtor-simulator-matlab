@@ -73,7 +73,8 @@ end
             end
             
         end
-        dps(i)=a.total_damage/(a.damage{end}{1});
+        [~,dps(i)]=a.GetStats();
+       %dps(i)=a.total_damage/(a.damage{end}{1});
         if(dps(i)>maxDPS)
             r=a;
             maxDPS=dps(i);

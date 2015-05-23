@@ -138,7 +138,7 @@ classdef BaseSimulator <handle
                 cbfunc=str2func(it.callback);
                 cbfunc(obj,t,it);
             end
-            if(it.ctype==1)
+            if(it.ctype>0)
                 t=obj.nextCast+1.5*(1-obj.stats.Alacrity);
                 DOTCheck(obj,t);
                 obj.nextCast=t;

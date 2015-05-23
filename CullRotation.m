@@ -15,22 +15,30 @@ if(pub)
 %    stats=loadjson('json/LunaStats.json');
 else
     data=json.loadjson('json/Virulence.json');
-    stats=json.loadjson('json/Sniper_old4pc_bis.json');
+    stats=json.loadjson('json/Sniper_6pc_bis.json');
 end
     for i = 1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
         %a=DFRotationClass();
 
         a=Virulence(data);
+        a.autocrit_charges=2;
         a.raid_armor_pen=0.2;
         a.stats=stats;
-        a.UseLazeTarget();
+        %a.UseLazeTarget();
         for j = 1:size(rotation)
             txt=rotation{j};
             if(strcmp(rotation{j},'Rifle Shot')||strcmp(txt,'Flurry of Bolts'))
                 a.UseRifleShot();
             elseif(strcmp(rotation{j},'Overload Shot'))
-                a.UseRifleShot();
+                a.UseOverloadShot();
+            elseif(strcmp(rotation{j},'Covered Escape'))
+                [isCast,CDLeft]=a.UseCoveredEscape();
+                if(~isCast)
+                    a.activations{end+1}={a.nextCast,'Delayed Cull'};
+                    a.AddDelay(CDLeft);
+                    a.UseCoveredEscape();
+                end
             elseif(strcmp(txt,'Lethal Shot')||strcmp(txt,'Dirty Blast'))
                 a.UseLethalShot();
             elseif(strcmp(txt,'Cull')||strcmp(txt,'Wounding Shots'))
@@ -65,6 +73,8 @@ end
                 a.UseLazeTarget();
             elseif(strcmp(txt,'Illegal Mods') || strcmp(txt,'Target Acquired'))
                 a.UseTargetAcquired();
+            elseif(strcmp(txt,'Crouch'))
+                a.UseCrouch()
             elseif(max(size(strfind(txt,'Adrenal')))>0)
                 a.UseAdrenal();
             else
@@ -72,7 +82,8 @@ end
             end
             
         end
-        dps(i)=a.total_damage/(a.damage{end}{1});
+        [~,dps(i)]=a.GetStats();
+        %dps(i)=a.total_damage/(a.damage{end}{1});
         if(dps(i)>maxDPS)
             r=a;
             maxDPS=dps(i);

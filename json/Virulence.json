@@ -186,11 +186,12 @@
 			"raid_mult": 1.05,
             "dmg_type": 1,
             "id": "rs",
-            "CD": 0
+            "CD": 0,
+            "name": "Rifle Shot"
 		},
 		"os": {
 			"c": 1.39,
-			"Sm": 0.13,
+			"Sm": 0.139,
 			"Sx": 0.139,
 			"Sh": 3185,
 			"Am": -0.07,
@@ -205,7 +206,30 @@
 			"raid_mult": 1.05,
             "dmg_type": 1,
             "id": "overload",
-            "CD": 0
+            "CD": 0,
+            "name": "Overload Shot"
+		},
+        "cm": {
+			"c": 0.12,
+			"Sm": 0.0120,
+			"Sx": 0.012,
+			"Sh": 3185,
+			"Am": 0.00,
+			"w": 0,
+			"mult": 1.,
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"ctype": 4,
+			"ct": 0,
+			"int": 1,
+			"dur": 8,
+			"base_acc": 1,
+			"raid_mult": 1.12,
+			"name": "Corrosive Mine",
+            "dmg_type": 3,
+            "id": "corr_mine",
+            "CD": 20
 		}
 	},
 	"buffs": {
@@ -256,7 +280,8 @@
 			"NextTick": -1,
 			"Expire": -1,
 			"WExpire": -1,
-			"Ala": 1
+			"Ala": 1,
+            "it": "cm"
 		}
 	},
 	"procs": {
