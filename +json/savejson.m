@@ -84,7 +84,7 @@ function json=savejson(rootname,obj,varargin)
 %
 % -- this function is part of JSONLab toolbox (http://iso2mesh.sf.net/cgi-bin/index.cgi?jsonlab)
 %
-
+import json.*
 if(nargin==1)
    varname=inputname(1);
    obj=rootname;
@@ -103,7 +103,7 @@ end
 opt.IsOctave=exist('OCTAVE_VERSION','builtin');
 rootisarray=0;
 rootlevel=1;
-forceroot=jsonopt('ForceRootName',0,opt);
+forceroot=0;%jsonopt('ForceRootName',0,opt);
 if((isnumeric(obj) || islogical(obj) || ischar(obj) || isstruct(obj) || iscell(obj)) && isempty(rootname) && forceroot==0)
     rootisarray=1;
     rootlevel=0;
@@ -472,4 +472,36 @@ else
   for i=1:length(escapechars);
     newstr=regexprep(newstr,escapechars{i},regexprep(escapechars{i},'\\','\\\\'));
   end
+end
+
+function val=jsonopt(key,default,varargin)
+%
+% val=jsonopt(key,default,optstruct)
+%
+% setting options based on a struct. The struct can be produced
+% by varargin2struct from a list of 'param','value' pairs
+%
+% authors:Qianqian Fang (fangq<at> nmr.mgh.harvard.edu)
+%
+% $Id: loadjson.m 371 2012-06-20 12:43:06Z fangq $
+%
+% input:
+%      key: a string with which one look up a value from a struct
+%      default: if the key does not exist, return default
+%      optstruct: a struct where each sub-field is a key 
+%
+% output:
+%      val: if key exists, val=optstruct.key; otherwise val=default
+%
+% license:
+%     BSD, see LICENSE_BSD.txt files for details
+%
+% -- this function is part of jsonlab toolbox (http://iso2mesh.sf.net/cgi-bin/index.cgi?jsonlab)
+% 
+
+val=default;
+if(nargin<=2) return; end
+opt=varargin{1};
+if(isstruct(opt) && isfield(opt,key))
+    val=getfield(opt,key);
 end
