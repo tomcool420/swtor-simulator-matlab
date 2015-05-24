@@ -28,7 +28,7 @@ stats=json.loadjson('json/Kwerty_norelics.json');
                 a.UseHammerShot();
             elseif(strcmp(rotation{j},'High Impact Bolt'))
                 nc=a.nextCast;
-                a.AddDelay(0.05);
+                a.AddDelay(0.237);
                 [isCast,CDLeft]=a.UseHighImpactBolt();
                 if(~isCast)
                     fprintf('Delayed HIB (%.0f), %.2fs\n',j,CDLeft);
@@ -68,7 +68,7 @@ stats=json.loadjson('json/Kwerty_norelics.json');
             end
             
         end
-        a.MatchAPM(49.09);
+        %a.MatchAPM(49.09);
         [times(i),dps(i),apm(i)]=a.GetStats();
         %dps(i)=a.total_damage/(a.damage{end}{1});
         if(dps(i)>maxDPS)

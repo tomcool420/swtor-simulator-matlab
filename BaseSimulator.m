@@ -146,10 +146,15 @@ classdef BaseSimulator <handle
                 obj.activations{end+1}={t,it.name};
             end
             ticks = 1;
+            hits=1;
             if(isfield(it,'ticks'))
                 ticks=it.ticks;
+                hits=it.ticks;
             end
-            for i = 1:ticks
+            if(isfield(it,'hits'))
+                hits=it.hits;
+            end
+            for i = 1:hits
                 ac=isAutocrit(obj,it);
                 [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,obj.nextCast,it,ac);
                 mhd=mhd/ticks;
@@ -238,7 +243,7 @@ classdef BaseSimulator <handle
                     it=obj.abilities.(obj.dots.(dot).it);
                     [mhd,mhh,mhc]=CalculateDamage(obj,tn,it);
                     AddDamage(obj, {obj.dots.(dot).NextTick,it.name,mhd,mhc,mhh},it);
-
+                    DOTCheckCB(obj,t,it);
                     if(t>=obj.dots.(dot).Expire)
                         obj.dots.(dot).NextTick=-1;
                     else
@@ -247,6 +252,9 @@ classdef BaseSimulator <handle
               end
            end
         end 
+        function DOTCheckCB(obj,t,it)
+            %Sublclass this
+        end
         function AddDamage(obj,dmg,it)
             if(it.dmg_type==3 )
             elseif(it.dmg_type==1)

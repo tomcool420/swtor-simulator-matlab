@@ -183,7 +183,7 @@ classdef Tactics < BaseSimulator
             end
             %fprintf('%f %f %f\n',mhm,mhx,mhd);
             %2PC set bonus
-            if(t<obj.procs.FR.LastProc+15 && obj.procs.FR.LastProc>=0)
+            if(t<obj.procs.CT.LastProc+15 && obj.procs.CT.LastProc>=0)
                 mhd=mhd*1.02;
                 ohd=ohd*1.02;
             end;
