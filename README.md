@@ -136,7 +136,10 @@ the JSON Ability file has all the abilities likes this
 			"raid_mult": 1.05,
 			"name": "Dirty Blast",
 			"callback": "LSCallback",
-			"dmg_type": 1
+			"id": "lethalweap"
+			"dmg_type": 1,
+			"hits": 1,
+			"ticks": 1
 		}
 ```
 
@@ -166,6 +169,8 @@ the JSON Ability file has all the abilities likes this
       2 kinetic
       3 internal
       4 elemental
+* hits = number of unique hits per ability usage (2 for double strike, 3 for saber strike)
+* ticks= number of hits the damage is divided by (7 for hammer shot). if ticks is present but hits isn't, hits= ticks
 
 #TODO:
 [ ]Add Ability Cooldown support
