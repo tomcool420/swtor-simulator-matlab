@@ -11,7 +11,8 @@ classdef BaseSimulator <handle
         activations={};
         autocrit_charges=0;
         autocrit_abilities={};
-        autocrit_time_since_proc;
+        autocrit_last_proc=-1;
+        autocrit_proc_duration=0;
         total_damage=0;
         total_HP=1000000;
         boss_armor=8853;
@@ -40,7 +41,7 @@ classdef BaseSimulator <handle
            savejson('',obj.stats,fname) 
         end
         function LoadStats(obj,fname)
-           obj.stats=loadjson(fname);
+           obj.stats=json.loadjson(fname);
         end
         function LoadAbilities(obj,fname)
             if(size(strfind(fname,'bin')))
@@ -77,7 +78,7 @@ classdef BaseSimulator <handle
            obj.act_nb;
            obj.autocrit_charges=0;
            obj.autocrit_abilities={};
-           obj.autocrit_time_since_proc=-1;
+           obj.autocrit_last_proc=-1;
         end
         function UseAdrenal(obj)
             obj.buffs.AD.LastUsed=obj.nextCast;
@@ -85,9 +86,11 @@ classdef BaseSimulator <handle
         end
         function r = isAutocrit(obj,it)
             r=0;
-            if(sum(strcmp(obj.autocrit_abilities,it.name))&&...
-               obj.autocrit_charges>0)
-               r=1;
+            if(sum(strcmp(obj.autocrit_abilities,it.name)))
+                if(obj.autocrit_charges>0 && ...
+                        obj.autocrit_proc_duration+obj.autocrit_last_proc>obj.nextCast)
+                    r=1;
+                end
             end
         end
         function [isAv,CDLeft]=isAvailable(obj,it)
@@ -98,25 +101,36 @@ classdef BaseSimulator <handle
             end
             isAv=(CDLeft==0);
         end
-        function [isCast,CDLeft]=ApplyDot(obj,dname,it)
-            [isCast,CDLeft]=isAvailable(obj,it);
-            if(~isCast)
-                return;
+        function [isCast,CDLeft]=ApplyDot(obj,dname,it,offGCD)
+            if (nargin<4)
+                offGCD = false;
+            end
+            if(~offGCD)
+                [isCast,CDLeft]=isAvailable(obj,it);
+                if(~isCast)
+                    return;
+                end
             end
             t=obj.nextCast;
             obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
             DOTCheck(obj,t);
             [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
+            
             AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
-            obj.activations{end+1}={t,it.name};
+            
+            if(~offGCD)
+                obj.activations{end+1}={t,it.name};
+            end
             obj.dots.(dname).Ala=obj.stats.Alacrity;
             obj.dots.(dname).LastUsed=t;
             obj.dots.(dname).NextTick=t+it.int*(1-obj.stats.Alacrity);
             obj.dots.(dname).Expire=t+it.dur*(1-obj.stats.Alacrity);
             obj.dots.(dname).WExpire=t+(it.dur+5)*(1-obj.stats.Alacrity);
-            GCD=1.5*(1-obj.stats.Alacrity);
-            DOTCheck(obj,t+GCD);
-            obj.nextCast=t+GCD;
+            if(~offGCD)
+                GCD=1.5*(1-obj.stats.Alacrity);
+                DOTCheck(obj,t+GCD);
+                obj.nextCast=t+GCD;
+            end
         end
         function [isCast,CDLeft]=ApplyInstantCast(obj,it)
             [isCast,CDLeft]=isAvailable(obj,it);
@@ -125,18 +139,28 @@ classdef BaseSimulator <handle
             end
             t=obj.nextCast;
             obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
-            [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,obj.nextCast,it);
+            
             if(it.ctype==1)
                 obj.activations{end+1}={t,it.name};
             end
-            AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
-            ac=isAutocrit(obj,it);
-            if(ohd>=0)
-                AddDamage(obj,{t,[it.name ' OH'],ohd,ohc,ohh},it);
+            ticks = 1;
+            if(isfield(it,'ticks'))
+                ticks=it.ticks;
             end
-            if(isfield(it,'callback'))
-                cbfunc=str2func(it.callback);
-                cbfunc(obj,t,it);
+            for i = 1:ticks
+                ac=isAutocrit(obj,it);
+                [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,obj.nextCast,it,ac);
+                mhd=mhd/ticks;
+                ohd=ohd/ticks;
+                AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
+                
+                if(ohd>=0)
+                    AddDamage(obj,{t,[it.name ' OH'],ohd,ohc,ohh},it);
+                end
+                if(isfield(it,'callback'))
+                    cbfunc=str2func(it.callback);
+                    cbfunc(obj,t,it);
+                end
             end
             if(it.ctype>0)
                 t=obj.nextCast+1.5*(1-obj.stats.Alacrity);
