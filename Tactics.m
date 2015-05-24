@@ -7,8 +7,22 @@ classdef Tactics < BaseSimulator
     end
 
     methods
-        function obj=Tactics(varargin)
-            LoadAbilities(obj,'Tactics.json')
+
+        function obj=Tactics(z)
+            if(nargin<1)
+                z='PT';
+            end
+            if(isstruct(z))
+                LoadAbilities_(obj,z);
+            elseif(ischar(z))
+                if(ismember(z,'Vanguard'))
+                    LoadAbilities(obj,'json/Tactics.json')
+                else
+                    LoadAbilities(obj,'json/Tactics.json')
+                end
+            end
+            obj.autocrit_abilities = {'Cull','Ambush','Engineering Probe','Cell Burst','Fire Pulse'};
+            obj.raid_armor_pen=0.2;
         end
         function PreloadMissiles(obj)
             obj.missiles_loaded=7;
@@ -23,31 +37,41 @@ classdef Tactics < BaseSimulator
             if(obj.nextCast>=obj.buffs.BF.Available)
                 obj.buffs.BF.Available=obj.nextCast+obj.buffs.BF.CD*(1-obj.stats.Alacrity);
                 obj.buffs.BF.LastUsed=obj.nextCast;
-                fprintf('Using Battle Focus (%.1f)\n',obj.nextCast)
+                %fprintf('Using Battle Focus (%.1f)\n',obj.nextCast)
                 obj.activations{end+1}={obj.nextCast,'Battle Focus'};
             end
         end
-        function UseTacticalSurge(obj)
-            obj.ApplyInstantCast(obj.abilities.ts);
+        function [isCast,CDLeft]=UseTacticalSurge(obj)
+            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.ts);
         end
-        function UseStockStrike(obj)
-            obj.ApplyInstantCast(obj.abilities.ss);
+        function [isCast,CDLeft]=UseStockStrike(obj)
+            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.ss);
         end
-        function UseHighImpactBolt(obj)
-            obj.ApplyInstantCast(obj.abilities.hib);
+        function [isCast,CDLeft]=UseHighImpactBolt(obj)
+            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.hib);
         end
-        function UseGut(obj)
-            obj.ApplyInstantCast(obj.abilities.gut);
-            obj.ApplyDot('GUT',obj.abilities.gutd);
+        function [isCast,CDLeft]=UseGut(obj)
+            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.gut);
+            obj.ApplyDot('GUT',obj.abilities.gutd,1);
         end
-        function UseCellBurst(obj)
-            obj.ApplyInstantCast(obj.abilities.cb);
+        function [isCast,CDLeft]=UseCellBurst(obj)
+            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.cb);
         end
-        function UseHammerShot(obj)
-            obj.ApplyInstantCast(obj.abilities.hs);
+        function [isCast,CDLeft]=UseHammerShot(obj)
+            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.hs);
         end
-        function UseAssaultPlastique(obj)
-            obj.ApplyInstantCast(obj.abilities.ap);
+        function [isCast,CDLeft]=UseAssaultPlastique(obj)
+            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.ap);
+        end
+        function UseShoulderCannon(obj)
+            if(obj.missiles_loaded==0)
+                obj.missiles_loaded=7;
+                %fprintf('Reloading Shoulder Cannon %.02f\n',obj.nextCast);
+            else
+                obj.ApplyInstantCast(obj.abilities.sc);
+                obj.missiles_loaded=obj.missiles_loaded-1;
+            end
+            
         end
         
 %%%%%%%%%%%%%%%%%%
@@ -59,11 +83,25 @@ classdef Tactics < BaseSimulator
             end
             if(obj.dots.GUT.Expire>t)
                 DOTCheck(obj,t);
-                ApplyDot(obj,'GUT',obj.abilities.gutd);
+                ApplyDot(obj,'GUT',obj.abilities.gutd,1);
             end
         end
-        function ProcCallback(obj,t,~)
-            %autocrit and HIB proc code goes here
+        function ProcCallback(obj,t,it)
+            ia=obj.procs.IA;
+            if(ia.LastProc<0 || (ia.LastProc+ia.CD*(1-ia.Ala)*.99)<=t)
+               ia.LastProc=t;
+               ia.Ala=obj.stats.Alacrity;
+               obj.avail.hib=t;
+               obj.procs.IA=ia;
+            end
+            if(strcmp(it.id,'tacsurge'))
+                if(obj.autocrit_last_proc+60<obj.nextCast || obj.autocrit_last_proc<0)
+                   obj.autocrit_last_proc=obj.nextCast; 
+                   obj.autocrit_proc_duration=30;
+                   obj.autocrit_charges=1;
+                   fprintf('autocrit procced %0.2f\n',obj.nextCast);
+                end
+            end
         end
         function CBCallback(obj,t,~)
             obj.abilities.cb.charges=0;
@@ -72,6 +110,9 @@ classdef Tactics < BaseSimulator
     function [mhd,mhh,mhc,ohd,ohh,ohc] = CalculateDamage(obj,t,it,autocrit)
             if(nargin<4)
                 autocrit = false;
+            end
+            if(autocrit)
+                fprintf('woo autocrit %.2f\n',t)
             end
             if(t>obj.procs.SA.LastProc+obj.procs.SA.CD)
                 if(rand()<0.3)
@@ -134,7 +175,6 @@ classdef Tactics < BaseSimulator
             mhh = rand()<(obj.stats.Accuracy+it.base_acc-obj.boss_def+bonusacc);
             mhd = (rand()*(mhx-mhm)+mhm)*(1+(s_.Surge+it.sb)*mhc)*mhh;
             if(isfield(it,'charges'))
-                fprintf('woo using %.0f charges\n',it.charges);
                 mhd=mhd*it.charges; 
             end
             %fprintf('%f %f %f\n',mhm,mhx,mhd);
