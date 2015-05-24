@@ -136,7 +136,7 @@ the JSON Ability file has all the abilities likes this
 			"raid_mult": 1.05,
 			"name": "Dirty Blast",
 			"callback": "LSCallback",
-			"id": "lethalweap"
+			"id": "lethalweap",
 			"dmg_type": 1,
 			"hits": 1,
 			"ticks": 1
