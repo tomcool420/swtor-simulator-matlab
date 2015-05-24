@@ -7,18 +7,19 @@
 			"Sh": 3185,
 			"Am": 0,
 			"w": 1,
-			"mult": 1,
+			"mult": 1.05,
 			"cb": 0,
-			"sb": 0,
+			"sb": 0.3,
 			"s30": 0,
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1,
+			"raid_mult": 1.05,
 			"name": "Double Strike",
 			"dmg_type": 2,
 			"id": "doublestrike",
-			"CD": 0
+			"CD": 0,
+			"hits": 2
 		},
 		"fib": {
 			"c": 1.81,
@@ -31,26 +32,27 @@
 			"mult": 1,
 			"cb": 0,
 			"sb": 0,
-			"s30": 0,
+			"s30": 0.15,
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1,
+			"raid_mult": 1.22,
 			"name": "Force in Balance",
 			"dmg_type": 3,
-			"id": "doublestrike"
+			"id": "fib",
+			"callback": "FIBCallback"
 		},
-		"sv": {
-			"c": 0.25,
-			"Sm": 0.025,
-			"Sx": 0.025,
+		"sf": {
+			"c": 0.36,
+			"Sm": 0.036,
+			"Sx": 0.036,
 			"Sh": 3185,
 			"Am": 0,
 			"w": 0,
-			"mult": 1,
+			"mult": 1.2,
 			"cb": 0,
 			"sb": 0,
-			"s30": 0,
+			"s30": 0.15,
 			"ctype": 4,
 			"ct": 0,
 			"int": 3,
@@ -58,7 +60,7 @@
 			"id": "severforce",
 			"CD": 9,
 			"base_acc": 1,
-			"raid_mult": 1,
+			"raid_mult": 1.12,
 			"name": "Sever Force",
 			"dmg_type": 3
 		},
@@ -69,10 +71,10 @@
 			"Sh": 3185,
 			"Am": 0,
 			"w": 0,
-			"mult": 1,
+			"mult": 1.3,
 			"cb": 0,
 			"sb": 0,
-			"s30": 0,
+			"s30": 0.15,
 			"ctype": 4,
 			"ct": 0,
 			"int": 3,
@@ -80,7 +82,7 @@
 			"id": "forcebreach",
 			"CD": 0,
 			"base_acc": 1,
-			"raid_mult": 1,
+			"raid_mult": 1.05,
 			"name": "Force Breach",
 			"dmg_type": 1
 		},
@@ -118,11 +120,12 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 0.9,
-			"raid_mult": 1,
+			"raid_mult": 1.05,
 			"name": "Saber Strike",
 			"dmg_type": 2,
 			"id": "saberstrike",
-			"CD": 15
+			"CD": 0,
+			"hits": 3
 		},
 		"ses": {
 			"c": 1.86,
@@ -131,9 +134,9 @@
 			"Sh": 3185,
 			"Am": 0.24,
 			"w": 1,
-			"mult": 1,
+			"mult": 1.05,
 			"cb": 0,
-			"sb": 0,
+			"sb": 0.3,
 			"s30": 0,
 			"ctype": 1,
 			"ct": 0,
@@ -142,8 +145,7 @@
 			"name": "Serenity Strike",
 			"dmg_type": 1,
 			"id": "serenitystrike",
-			"CD": 12,
-			"ticks": 7
+			"CD": 12
 		},
 		"vq": {
 			"c": 1.295,
@@ -152,18 +154,19 @@
 			"Sh": 3185,
 			"Am": 0,
 			"w": 0,
-			"mult": 1,
+			"mult": 1.2,
 			"cb": 0,
 			"sb": 0,
-			"s30": 0,
+			"s30": 0.15,
 			"ctype": 2,
 			"ct": 2,
 			"base_acc": 1,
 			"raid_mult": 1.05,
 			"name": "Vanquish",
-			"dmg_type": 3,
+			"dmg_type": 2,
 			"id": "vanquish",
-			"CD": 15
+			"CD": 15,
+			"callback": "VQCallback"
 		},
 		"vqd": {
 			"c": 0.35,
@@ -172,10 +175,10 @@
 			"Sh": 3185,
 			"Am": 0,
 			"w": 0,
-			"mult": 1,
+			"mult": 1.1,
 			"cb": 0,
 			"sb": 0,
-			"s30": 0,
+			"s30": 0.15,
 			"ctype": 4,
 			"ct": 0,
 			"int": 1,
@@ -184,7 +187,7 @@
 			"CD": 0,
 			"initial_tick": 0,
 			"base_acc": 1,
-			"raid_mult": 1,
+			"raid_mult": 1.05,
 			"name": "Vanquish DOT",
 			"dmg_type": 2
 		},
@@ -196,7 +199,7 @@
 			"Am": 0,
 			"w": 0,
 			"mult": 1,
-			"cb": 0,
+			"cb": 0.5,
 			"sb": 0,
 			"s30": 0,
 			"ctype": 0,
@@ -258,6 +261,12 @@
 			"Available": 0,
 			"Dur": 20,
 			"CD": 90
+		},
+		"FiB": {
+			"LastUsed": -1,
+			"Available": -1,
+			"Dur": 30,
+			"Charges": 0
 		}
 	},
 	"procs": {
@@ -285,7 +294,13 @@
 			"LastProc": -1,
 			"Dur": 10,
 			"CD": 6,
-			"Ala": 0
+			"Available": 0
+		},
+		"FoS": {
+			"LastProc": -1,
+			"Dur": 15,
+			"CD": 9,
+			"Available": 0
 		}
 	}
 }
