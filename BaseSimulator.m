@@ -31,6 +31,7 @@ classdef BaseSimulator <handle
         out_stats_new=struct();
         fresh_abilities=struct();
         avail=struct();
+        extra_abilities=0;
     end
     
     methods
@@ -114,10 +115,11 @@ classdef BaseSimulator <handle
             t=obj.nextCast;
             obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
             DOTCheck(obj,t);
-            [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
-            
-            AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
-            
+            if(isfield(it,'initial_tick') && it.initial_tick==0)
+            else
+                [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
+                AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
+            end
             if(~offGCD)
                 obj.activations{end+1}={t,it.name};
             end
@@ -140,7 +142,7 @@ classdef BaseSimulator <handle
             t=obj.nextCast;
             obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
             
-            if(it.ctype==1)
+            if(it.ctype~=0)
                 obj.activations{end+1}={t,it.name};
             end
             ticks = 1;
@@ -290,9 +292,15 @@ classdef BaseSimulator <handle
         end
         function [tt,dps,apm,cc]=GetStats(obj)
             tt=obj.damage{end}{1}-obj.damage{1}{1};
-            apm=max(size(obj.activations))/tt*60;
+            apm=max(size(obj.activations)+obj.extra_abilities)/tt*60;
             dps=obj.total_damage/tt;
             cc=obj.crits/obj.dmg_effects;
+        end
+        function MatchAPM(obj,target_apm)
+            [tt,~,~,~]=GetStats(obj);
+            act=max(size(obj.activations)+obj.extra_abilities);
+            time=act/target_apm*60+obj.damage{1}{1};
+            obj.damage{end+1}={time,'Dummy APM Padding'};
         end
         function PrintStats(obj)
            [tt,dps,apm,cc]=obj.GetStats();
@@ -396,6 +404,7 @@ classdef BaseSimulator <handle
           obj.out_stats_new.(str_save)=r;
           %obj.out_stats(dmg{2})=r;
         end
+        
         function GetSize(this)
             props = properties(this);
             totSize = 0;
