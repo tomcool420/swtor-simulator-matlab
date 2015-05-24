@@ -52,7 +52,7 @@ classdef Tactics < BaseSimulator
         end
         function [isCast,CDLeft]=UseGut(obj)
             [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.gut);
-            obj.ApplyDot('GUT',obj.abilities.gutd,1);
+            
         end
         function [isCast,CDLeft]=UseCellBurst(obj)
             [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.cb);
@@ -61,11 +61,12 @@ classdef Tactics < BaseSimulator
             [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.hs);
         end
         function [isCast,CDLeft]=UseAssaultPlastique(obj)
-            [isCast,CDLeft]=obj.ApplyInstantCast(obj.abilities.ap);
+            [isCast,CDLeft]=obj.ApplyDot('AP',obj.abilities.ap);
         end
         function UseShoulderCannon(obj)
             if(obj.missiles_loaded==0)
                 obj.missiles_loaded=7;
+                obj.activations{end+1}={obj.nextCast,'Loading Shoulder Cannon'};
                 %fprintf('Reloading Shoulder Cannon %.02f\n',obj.nextCast);
             else
                 obj.ApplyInstantCast(obj.abilities.sc);
@@ -99,21 +100,24 @@ classdef Tactics < BaseSimulator
                    obj.autocrit_last_proc=obj.nextCast; 
                    obj.autocrit_proc_duration=30;
                    obj.autocrit_charges=1;
-                   fprintf('autocrit procced %0.2f\n',obj.nextCast);
+                   %fprintf('autocrit procced %0.2f\n',obj.nextCast);
                 end
             end
         end
         function CBCallback(obj,t,~)
             obj.abilities.cb.charges=0;
         end
+        function GUTCallback(obj,~,~)
+             obj.ApplyDot('GUT',obj.abilities.gutd,1);
+        end
     
     function [mhd,mhh,mhc,ohd,ohh,ohc] = CalculateDamage(obj,t,it,autocrit)
             if(nargin<4)
                 autocrit = false;
             end
-            if(autocrit)
-                fprintf('woo autocrit %.2f\n',t)
-            end
+%             if(autocrit)
+%                 fprintf('woo autocrit %.2f\n',t)
+%             end
             if(t>obj.procs.SA.LastProc+obj.procs.SA.CD)
                 if(rand()<0.3)
                     obj.SAprocs=obj.SAprocs+1;
