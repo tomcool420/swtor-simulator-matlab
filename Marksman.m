@@ -68,6 +68,8 @@ classdef Marksman < BaseSimulator
                 obj.buffs.LT.Available=obj.nextCast+60*(1-obj.stats.Alacrity);
                 obj.buffs.LT.LastUsed=obj.nextCast;
                 obj.activations{end+1}={obj.nextCast,name};
+                obj.autocrit_last_proc=obj.nextCast; 
+               obj.autocrit_proc_duration=20+obj.stats.pc6*20;
             else
                 %disp('LT is not up yet');
             end
