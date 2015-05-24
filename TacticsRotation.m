@@ -1,4 +1,4 @@
-function [r,dps]=TacticsRotation(rotation,loops)
+function [r,dps,apm,times]=TacticsRotation(rotation,loops)
 if(nargin<2)
     loops=1;
 end
@@ -6,9 +6,11 @@ end
 r=0;
 maxDPS=0;
 dps=zeros(1,loops);
+apm=zeros(1,loops);
+times=zeros(1,loops);
 strl=0;
 data=json.loadjson('json/Tactics.json');
-stats=json.loadjson('json/VGTest.json');
+stats=json.loadjson('json/Kwerty_norelics.json');
 
     for i = 1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
@@ -61,11 +63,13 @@ stats=json.loadjson('json/VGTest.json');
             elseif(strcmp(rotation{j},'Shoulder Cannon'))
                 a.UseShoulderCannon();
             else
+                a.extra_abilities=a.extra_abilities+1;
                 %disp(['unknown ' txt]);
             end
             
         end
-        [~,dps(i)]=a.GetStats();
+        a.MatchAPM(49.09);
+        [times(i),dps(i),apm(i)]=a.GetStats();
         %dps(i)=a.total_damage/(a.damage{end}{1});
         if(dps(i)>maxDPS)
             r=a;
