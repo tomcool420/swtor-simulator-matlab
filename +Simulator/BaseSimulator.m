@@ -9,6 +9,7 @@ classdef BaseSimulator < handle
         buffs=struct();
         procs=struct();
         activations={};
+        log={};
         autocrit_charges=0;
         autocrit_abilities={};
         autocrit_last_proc=-1;
@@ -142,18 +143,21 @@ classdef BaseSimulator < handle
             t=obj.nextCast;
             obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
             DOTCheck(obj,t);
+            
+            if(~offGCD)
+                obj.AddToActivations({t,it.name});
+            end
+            
             if(isfield(it,'initial_tick') && it.initial_tick==0)
             else
                 [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
                 AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
             end
-            if(~offGCD)
-                obj.activations{end+1}={t,it.name};
-            end
+
             obj.dots.(dname).Ala=obj.stats.Alacrity;
             obj.dots.(dname).LastUsed=t;
             obj.dots.(dname).NextTick=t+it.int/(1+obj.stats.Alacrity);
-            obj.dots.(dname).Expire=t+it.dur/(1+obj.stats.Alacrity);
+            obj.dots.(dname).Expire=t+it.dur/(1+obj.stats.Alacrity)*1.001;
             obj.dots.(dname).WExpire=t+(it.dur+5)/(1+obj.stats.Alacrity);
             if(~offGCD)
                 GCD=1.5/(1+obj.stats.Alacrity);
@@ -170,7 +174,7 @@ classdef BaseSimulator < handle
             obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
             
             if(it.ctype~=0)
-                obj.activations{end+1}={t,it.name};
+                obj.AddToActivations({t,it.name});
             end
             ticks = 1;
             hits=1;
@@ -213,7 +217,7 @@ classdef BaseSimulator < handle
             if(nargin<3)
                 ct_red=0;
             end
-            obj.activations{end+1}={obj.nextCast,it.name};
+            obj.AddToActivations({obj.nextCast,it.name});
             obj.nextCast=obj.nextCast+(it.ct-ct_red)/(1+obj.stats.Alacrity);
             obj.avail.(it.id)=obj.nextCast+it.CD/(1+obj.stats.Alacrity);
             t=obj.nextCast;
@@ -237,7 +241,7 @@ classdef BaseSimulator < handle
             if(~isCast)
                 return;
             end
-            obj.activations{end+1}={obj.nextCast,it.name};
+            obj.AddToActivations({obj.nextCast,it.name});
             ac=isAutocrit(obj,it);
             castTime=it.ct/(1+obj.stats.Alacrity);
             t=obj.nextCast;
@@ -267,23 +271,27 @@ classdef BaseSimulator < handle
            for i = 1:size(fn,1)
               dot = fn{i};
               tn=obj.dots.(dot).NextTick;
-              if(tn>0 && tn<=t) 
+              while(tn>0 && tn<=t) 
                     it=obj.abilities.(obj.dots.(dot).it);
                     [mhd,mhh,mhc]=CalculateDamage(obj,tn,it);
                     AddDamage(obj, {obj.dots.(dot).NextTick,it.name,mhd,mhc,mhh},it);
                     DOTCheckCB(obj,t,it,dot);
-                    if(t>=obj.dots.(dot).Expire)
+                    dt=obj.dots.(dot);
+%                     if(strcmp(dot,'FB'))
+%                        fprintf('FB dot: %.2f lu %.1f nt %.1f nte %.1f exp %.1f\n',tn,dt.LastUsed,dt.NextTick,tn+it.int/(1+obj.dots.(dot).Ala)*.999,dt.Expire); 
+%                     end
+                    obj.dots.(dot).NextTick=tn+it.int/(1+obj.dots.(dot).Ala);
+                    if(obj.dots.(dot).NextTick>obj.dots.(dot).Expire)
                         obj.dots.(dot).NextTick=-1;
-                    else
-                        obj.dots.(dot).NextTick=tn+it.int*(1-obj.dots.(dot).Ala);
                     end
+                    tn=obj.dots.(dot).NextTick;
               end
            end
         end 
 
         function AddDamage(obj,dmg,it)
             AddDamageCB(obj,dmg{1},dmg,it);
-            if(obj.total_damage<obj.total_HP)
+            if(true)%obj.total_damage<obj.total_HP)
                 if(dmg{4}>0)
                     obj.crits=obj.crits+1;
                 end
@@ -359,13 +367,37 @@ classdef BaseSimulator < handle
             fprintf('%s\n',repmat('=',1,110));
             
         end
-        
+        function AddToActivations(obj,act)
+            obj.log{end+1}=act;
+            obj.activations{end+1}=act;
+        end
+       function PrintLogAbility(obj,it)
+           counter=0;
+          for i = 1:numel(obj.log)
+              o=obj.log{i};
+              
+             if(strcmp(o{2},it.name))
+                 if(numel(o)>2)
+                     counter=counter+1;
+                     fprintf('%.0f     [%6.2f] %-25s: %.0fDMG\n',counter,o{1},o{2},o{3});
+                 else
+                     fprintf('[%6.2f] %-25s\n',o{1},o{2});
+                     counter=0;
+                 end
+                 
+                 
+             end
+          end
+       end
        function [mhd,mhh,mhc,ohd,ohh,ohc] = CalculateDamage(obj,t,it,autocrit)
             if(nargin<4)
                 autocrit = false;
             end
             mhd=0;mhc=0;ohd=0;ohc=0;
             s_=obj.stats;
+%             if(autocrit)
+%                fprintf('woo autocrit\n'); 
+%             end
             %Check if there is an accuracy boost - 
             [bacc]=CalculateBonusAccuracy(obj,t,it);
             %Calculate Hit Checks
@@ -430,7 +462,7 @@ classdef BaseSimulator < handle
                 
                 ohc = max(autocrit,rand()<(obj.stats.CritChance+bc+it.cb));
                 ohh = rand()<(it.base_acc-obj.boss_def+obj.stats.Accuracy-0.3+bacc);
-                ohd = (rand()*(ohx-ohn)+ohn)*(1+(s_.Surge+bs+it.sb)*ohc)*ohh*bm;
+                ohd = (rand()*(ohx-ohn)+ohn)*(1+(s_.Surge+bs+it.sb)*ohc)*ohh*bm*0.3;
                 if(ohn==0 || ohx==0)
                     ohd=-1;
                 end
@@ -518,6 +550,7 @@ classdef BaseSimulator < handle
             fprintf('%.1f %.1f %.1f\n',mn,mx,mhd);
         end
         function AddToStats(obj,dmg)
+            obj.log{end+1}=dmg;
             str_save=strrep(dmg{2},' ','_');
           if(isfield(obj.out_stats_new,str_save))
              r=obj.out_stats_new.(str_save);

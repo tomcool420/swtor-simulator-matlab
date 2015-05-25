@@ -8,7 +8,7 @@ classdef Vanguard < Simulator.BaseSimulator
     methods
         function UseBattleFocus(obj)
             if(obj.nextCast>=obj.buffs.BF.Available)
-                obj.buffs.BF.Available=obj.nextCast+obj.buffs.BF.CD*(1-obj.stats.Alacrity);
+                obj.buffs.BF.Available=obj.nextCast+obj.buffs.BF.CD/(+-obj.stats.Alacrity);
                 obj.buffs.BF.LastUsed=obj.nextCast;
                 %fprintf('Using Battle Focus (%.1f)\n',obj.nextCast)
                 obj.activations{end+1}={obj.nextCast,'Battle Focus'};

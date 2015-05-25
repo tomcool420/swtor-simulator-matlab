@@ -34,7 +34,7 @@ classdef Sniper < Simulator.BaseSimulator
                %disp('LT is not up yet');
            end
         end
-        function bonuspen = CalculateBonusPen(obj,t,~)
+        function bonuspen = CalculateBonusPen(obj,it,t)
             %Right before DR is calculated, check for bonus armor pen 
             %only use for cooldowns (illegal mods or target acquired
             ta=obj.buffs.TA.LastUsed;

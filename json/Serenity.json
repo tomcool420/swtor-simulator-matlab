@@ -5,7 +5,7 @@
 			"Sm": 0.0775,
 			"Sx": 0.0775,
 			"Sh": 3185,
-			"Am": 0,
+			"Am": -0.48,
 			"w": 1,
 			"mult": 1.05,
 			"cb": 0,
@@ -104,7 +104,7 @@
 			"name": "Spinning Strike",
 			"dmg_type": 2,
 			"id": "spinstrike",
-			"CD": 6
+			"CD": 0
 		},
 		"sas": {
 			"c": 0.33,
@@ -145,7 +145,8 @@
 			"name": "Serenity Strike",
 			"dmg_type": 1,
 			"id": "serenitystrike",
-			"CD": 12
+			"CD": 12,
+			"callback": "SESCallback"
 		},
 		"vq": {
 			"c": 1.295,
@@ -175,7 +176,7 @@
 			"Sh": 3185,
 			"Am": 0,
 			"w": 0,
-			"mult": 1.1,
+			"mult": 1.3,
 			"cb": 0,
 			"sb": 0,
 			"s30": 0.15,
@@ -260,7 +261,8 @@
 			"LastUsed": -1,
 			"Available": 0,
 			"Dur": 20,
-			"CD": 90
+			"CD": 90,
+			"Charges": 0
 		},
 		"FiB": {
 			"LastUsed": -1,
@@ -280,10 +282,11 @@
 			"Dur": 6,
 			"CD": 20
 		},
-		"ST": {
+		"PC2": {
 			"LastProc": -1,
 			"Dur": 15,
-			"CD": 30
+			"CD": 30,
+			"Available": 0
 		},
 		"FS": {
 			"LastProc": -1,
@@ -300,6 +303,12 @@
 			"LastProc": -1,
 			"Dur": 15,
 			"CD": 9,
+			"Available": 0
+		},
+		"FT": {
+			"LastProc": -1,
+			"Dur": 15,
+			"CD": 1.5,
 			"Available": 0
 		}
 	}
