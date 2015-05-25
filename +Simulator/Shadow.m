@@ -4,6 +4,7 @@ classdef Shadow < Simulator.BaseSimulator
     
     properties
         FP_charge_amount=3;
+        LastFPChargeUsed=-1;
     end
     
     methods
@@ -28,10 +29,17 @@ classdef Shadow < Simulator.BaseSimulator
             if(obj.buffs.FP.Charges>0 && obj.buffs.FP.LastUsed+obj.buffs.FP.Dur>t )
                 if(strcmp(it.id,'fib')||strcmp(it.id,'vanquish'))
                     bc=0.6;
+                    obj.LastFPChargeUsed=t;
                     obj.buffs.FP.Charges=obj.buffs.FP.Charges-1;
                 end
                     
             end
+        end
+        
+        function CritCallback(obj,t,it,bc,mhc,ohc)
+           if(obj.LastFPChargeUsed==t&& mhc==0 && (strcmp(it.id,'fib')||strcmp(it.id,'vanquish'))) 
+               obj.buffs.FP.Charges=min(obj.buffs.FP.Charges+1,obj.FP_charge_amount);
+           end
         end
         
     end

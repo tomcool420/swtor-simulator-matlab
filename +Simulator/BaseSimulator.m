@@ -66,6 +66,10 @@ classdef BaseSimulator < handle
         function [bd, bc,bs,bm]=CalculateBonus(obj,t,it,mhh,ohh)
             bd=0;bc=0;bs=0;bm=1;
         end
+        function CritCallback(obj,t,it,bc,mhc,ohc)
+            %Function that gets called in case something special needs to
+            %be done after a crit (quickly)
+        end
         function SaveStats(obj,fname)
            savejson('',obj.stats,fname) 
         end
@@ -475,6 +479,7 @@ classdef BaseSimulator < handle
             
             %Calculate Crit Chance
             mhc = max(rand()<(obj.stats.CritChance+it.cb+bc),autocrit);
+            CritCallback(obj,t,it,bc,mhc,ohc)
             mhd = (rand()*(mhx-mhm)+mhm)...    %Randomize hit between max and min
                   *(1+(s_.Surge+it.sb)*mhc)... %Apply Crit Multiplier
                   *mhh...                      %Is it a hit?
