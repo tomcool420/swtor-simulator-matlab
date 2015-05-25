@@ -173,7 +173,7 @@ the JSON Ability file has all the abilities likes this
 * ticks= number of hits the damage is divided by (7 for hammer shot). if ticks is present but hits isn't, hits= ticks
 
 #TODO:
-[ ]Add Ability Cooldown support
-[ ]Add Energy support
-[ ]Add Other Classes
+*[X]Add Ability Cooldown support
+*[ ]Add Energy support
+*[ ]Add Other Classes
 
