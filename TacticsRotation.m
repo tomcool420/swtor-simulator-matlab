@@ -4,7 +4,7 @@ if(nargin<2)
 end
 
 r=0;
-maxDPS=0;
+mdps=0;
 dps=zeros(1,loops);
 apm=zeros(1,loops);
 times=zeros(1,loops);
@@ -16,11 +16,12 @@ stats=json.loadjson('json/Kwerty_norelics.json');
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
         %a=DFRotationClass();
 
-        a=Tactics(data);
+        a=Simulator.Tactics(data);
         a.PreloadCBCharges;
         a.PreloadMissiles;
         a.raid_armor_pen=0.2;
         a.stats=stats;
+        a.total_HP=1500000;
         %a.UseLazeTarget();
         for j = 1:size(rotation)
             txt=rotation{j};
@@ -28,7 +29,7 @@ stats=json.loadjson('json/Kwerty_norelics.json');
                 a.UseHammerShot();
             elseif(strcmp(rotation{j},'High Impact Bolt'))
                 nc=a.nextCast;
-                a.AddDelay(0.237);
+               a.AddDelay(0.237);
                 [isCast,CDLeft]=a.UseHighImpactBolt();
                 if(~isCast)
                     fprintf('Delayed HIB (%.0f), %.2fs\n',j,CDLeft);
@@ -39,6 +40,7 @@ stats=json.loadjson('json/Kwerty_norelics.json');
             elseif(strcmp(rotation{j},'Assault Plastique'))
                 [isCast,CDLeft]=a.UseAssaultPlastique();
                 if(~isCast)
+                    fprintf('delayed AP\n');
                     a.activations{end+1}={a.nextCast,'Delayed AP'};
                     a.AddDelay(CDLeft);
                     a.UseAssaultPlastique();
@@ -71,9 +73,10 @@ stats=json.loadjson('json/Kwerty_norelics.json');
         %a.MatchAPM(49.09);
         [times(i),dps(i),apm(i)]=a.GetStats();
         %dps(i)=a.total_damage/(a.damage{end}{1});
-        if(dps(i)>maxDPS)
+        m=mean(dps(1:i));
+        if(abs(dps(i)-m)<abs(mdps-m))
             r=a;
-            maxDPS=dps(i);
+            mdps=dps(i);
         end
     end
 end

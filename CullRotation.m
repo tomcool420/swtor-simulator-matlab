@@ -21,7 +21,7 @@ end
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
         %a=DFRotationClass();
 
-        a=Virulence(data);
+        a=Simulator.Virulence(data);
         a.autocrit_charges=2;
         a.raid_armor_pen=0.2;
         a.stats=stats;
@@ -35,13 +35,14 @@ end
             elseif(strcmp(rotation{j},'Covered Escape'))
                 [isCast,CDLeft]=a.UseCoveredEscape();
                 if(~isCast)
-                    a.activations{end+1}={a.nextCast,'Delayed Cull'};
+                    a.activations{end+1}={a.nextCast,'Delayed CE'};
                     a.AddDelay(CDLeft);
                     a.UseCoveredEscape();
                 end
             elseif(strcmp(txt,'Lethal Shot')||strcmp(txt,'Dirty Blast'))
                 a.UseLethalShot();
             elseif(strcmp(txt,'Cull')||strcmp(txt,'Wounding Shots'))
+                a.AddDelay(0.175)
                 [isCast,CDLeft]=a.UseCull();
                 if(~isCast)
                     a.activations{end+1}={a.nextCast,'Delayed Cull'};

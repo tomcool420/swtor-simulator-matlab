@@ -1,4 +1,4 @@
-classdef BaseSimulator <handle
+classdef BaseSimulator < handle
     %BASESIMULATOR Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -42,9 +42,10 @@ classdef BaseSimulator <handle
 %%%%%%%%%%%%%%
 %%%Callbacks to subclass
 %%%%%%%%%%%%%%
-        function DOTCheckCB(obj,t,it)
+        function DOTCheckCB(obj,t,it,dot)
             %Callback right AFTER a dot has ticked and the damage is
-            %applied
+            %applied (used for double tick dart in virulence)
+            obj;t;it;dot;
         end
         function bonuspen = CalculateBonusPen(obj,t,it)
             %Right before DR is calculated, check for bonus armor pen 
@@ -55,8 +56,15 @@ classdef BaseSimulator <handle
             %"CallBack" (not) called right before the damage is applied
             %A good time to either proc on hit abilities (force technique) 
             %or on hit procs (force synergy)
+            obj;t;it;dmg;
         end
-        
+        function bacc=CalculateBonusAccuracy(obj,t,it) 
+            %Check if you have an accuracy debuff up;
+            bacc=0;
+        end
+        function [bd, bc,bs,bm]=CalculateBonus(obj,t,it,mhh,ohh)
+            bd=0;bc=0;bs=0;bm=1;
+        end
         function SaveStats(obj,fname)
            savejson('',obj.stats,fname) 
         end
@@ -102,7 +110,7 @@ classdef BaseSimulator <handle
         end
         function UseAdrenal(obj)
             obj.buffs.AD.LastUsed=obj.nextCast;
-            obj.buffs.AD.Available=obj.nextCast+180*(1-obj.stats.Alacrity);
+            obj.buffs.AD.Available=obj.nextCast+180/(1+obj.stats.Alacrity);
         end
         function r = isAutocrit(obj,it)
             r=0;
@@ -132,7 +140,7 @@ classdef BaseSimulator <handle
                 end
             end
             t=obj.nextCast;
-            obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
+            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
             DOTCheck(obj,t);
             if(isfield(it,'initial_tick') && it.initial_tick==0)
             else
@@ -144,11 +152,11 @@ classdef BaseSimulator <handle
             end
             obj.dots.(dname).Ala=obj.stats.Alacrity;
             obj.dots.(dname).LastUsed=t;
-            obj.dots.(dname).NextTick=t+it.int*(1-obj.stats.Alacrity);
-            obj.dots.(dname).Expire=t+it.dur*(1-obj.stats.Alacrity);
-            obj.dots.(dname).WExpire=t+(it.dur+5)*(1-obj.stats.Alacrity);
+            obj.dots.(dname).NextTick=t+it.int/(1+obj.stats.Alacrity);
+            obj.dots.(dname).Expire=t+it.dur/(1+obj.stats.Alacrity);
+            obj.dots.(dname).WExpire=t+(it.dur+5)/(1+obj.stats.Alacrity);
             if(~offGCD)
-                GCD=1.5*(1-obj.stats.Alacrity);
+                GCD=1.5/(1+obj.stats.Alacrity);
                 DOTCheck(obj,t+GCD);
                 obj.nextCast=t+GCD;
             end
@@ -159,7 +167,7 @@ classdef BaseSimulator <handle
                 return;
             end
             t=obj.nextCast;
-            obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
+            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
             
             if(it.ctype~=0)
                 obj.activations{end+1}={t,it.name};
@@ -189,7 +197,7 @@ classdef BaseSimulator <handle
                 end
             end
             if(it.ctype>0)
-                t=obj.nextCast+1.5*(1-obj.stats.Alacrity);
+                t=obj.nextCast+1.5/(1+obj.stats.Alacrity);
                 DOTCheck(obj,t);
                 obj.nextCast=t;
             end
@@ -206,8 +214,8 @@ classdef BaseSimulator <handle
                 ct_red=0;
             end
             obj.activations{end+1}={obj.nextCast,it.name};
-            obj.nextCast=obj.nextCast+(it.ct-ct_red)*(1-obj.stats.Alacrity);
-            obj.avail.(it.id)=obj.nextCast+it.CD*(1-obj.stats.Alacrity);
+            obj.nextCast=obj.nextCast+(it.ct-ct_red)/(1+obj.stats.Alacrity);
+            obj.avail.(it.id)=obj.nextCast+it.CD/(1+obj.stats.Alacrity);
             t=obj.nextCast;
             DOTCheck(obj,t);
             ac=isAutocrit(obj,it);
@@ -231,9 +239,9 @@ classdef BaseSimulator <handle
             end
             obj.activations{end+1}={obj.nextCast,it.name};
             ac=isAutocrit(obj,it);
-            castTime=it.ct*(1-obj.stats.Alacrity);
+            castTime=it.ct/(1+obj.stats.Alacrity);
             t=obj.nextCast;
-            obj.avail.(it.id)=t+it.CD*(1-obj.stats.Alacrity);
+            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
             for i = 1:it.ticks
                 DOTCheck(obj,t);
                 [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,t,it,ac);
@@ -263,7 +271,7 @@ classdef BaseSimulator <handle
                     it=obj.abilities.(obj.dots.(dot).it);
                     [mhd,mhh,mhc]=CalculateDamage(obj,tn,it);
                     AddDamage(obj, {obj.dots.(dot).NextTick,it.name,mhd,mhc,mhh},it);
-                    DOTCheckCB(obj,t,it);
+                    DOTCheckCB(obj,t,it,dot);
                     if(t>=obj.dots.(dot).Expire)
                         obj.dots.(dot).NextTick=-1;
                     else
@@ -298,7 +306,9 @@ classdef BaseSimulator <handle
             if(isfield(it,'armor_pen'))
                 extra_ap=it.armor_pen;
             end
-            dr=ar*(1-min(ap+extra_ap,1))/(ar*(1-min(ap+extra_ap,1))+240*60+800);
+            ap=ap+extra_ap;
+            if(ap>1);ap=1;end;
+            dr=ar*(1-ap)/(ar*(1-ap)+240*60+800);
         end
         function PrintDamage(obj)
             dmg=obj.damage;
@@ -367,8 +377,8 @@ classdef BaseSimulator <handle
                 end
                 return;
             end
-            %Calculate Bonuses (pass hit check)
-            [bd_, bc_,bs_,baac_,bm_]=CalculateBonus(obj,t,it,mhh,ohh);
+            %Calculate Bonuses (passed hit check)
+            [bd_, bc_,bs_,bm_]=CalculateBonus(obj,t,it,mhh,ohh);
             
             %Calculate Relic Procs (SA and FR)
             if(t>obj.procs.SA.LastProc+obj.procs.SA.CD)
@@ -385,10 +395,9 @@ classdef BaseSimulator <handle
             end
             
             bd=0+bd_;
-            bacc=0+baac_;
             bc=0+bc_;       %Bonus Crit    10% = 0.1
             bs=0+bs_;       %Bonus Surge   10% = 0.1
-            bm=1+bm_;       %Bonus Mult    10% = 0.1
+            bm=0+bm_;       %Bonus Mult    10% = 0.1
                             % Dots under Fib Debuff = 10% boost
                             % Tactics CellBurst = 0-3 depending on
                             % lodes
@@ -441,7 +450,8 @@ classdef BaseSimulator <handle
             
 
             %2PC set bonus
-            if(t<obj.procs.PC2.LastProc+15 && obj.procs.PC2.LastProc>=0)
+            if(isfield(obj.procs,'PC2') && ...
+                t<obj.procs.PC2.LastProc+15 && obj.procs.PC2.LastProc>=0)
                 mhd=mhd*1.02;
                 ohd=ohd*1.02;
             end;
@@ -457,8 +467,8 @@ classdef BaseSimulator <handle
             end
             
             %Apply Boss Damage Reduction 
-            if(it.w==1)
-               dr=obj.CalculateBossDR(t,it);
+            if(it.dmg_type==1||it.dmg_type==2)
+               dr=obj.CalculateBossDR(it,t);
                mhd=mhd*(1-dr);
                ohd=ohd*(1-dr);
             end
@@ -469,8 +479,6 @@ classdef BaseSimulator <handle
                 crit=0;
             end
             bonusdmg=0;
-            bonusacc=0;
-            bonuscrit=0;
             bonusmult=0;
             s_=obj.stats;
             if(it.w==1)
@@ -492,7 +500,7 @@ classdef BaseSimulator <handle
                 tbonus = bonusdmg+obj.stats.TechBonus;
                 mhm=(tbonus*it.c+it.Sm*it.Sh)*it.mult;
                 mhx=(tbonus*it.c+it.Sx*it.Sh)*it.mult;
-                ohc=0; ohh=0; ohd=-1;
+                ohd=-1;
             end
             
             
@@ -514,7 +522,7 @@ classdef BaseSimulator <handle
           if(isfield(obj.out_stats_new,str_save))
              r=obj.out_stats_new.(str_save);
            else
-              r=struct('hits',0,'crits',0,'cd',0,'nd',0,'misses',0,'Pretty Name','');
+              r=struct('hits',0,'crits',0,'cd',0,'nd',0,'misses',0,'PrettyName','');
            end 
           r.hits=r.hits+1;
           if(dmg{5}==0)
