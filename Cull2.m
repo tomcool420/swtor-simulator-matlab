@@ -9,14 +9,14 @@ maxDPS=0;
 r=0;
 dps=zeros(1,loops);
 if(pub)
-    data=loadjson('json/DirtyFighting.json');
-    stats=loadjson('json/Gunslinger_old4pc_bis.json');
+    data=json.loadjson('json/DirtyFighting.json');
+    stats=json.loadjson('json/Gunslinger_old4pc_bis.json');
 else
-    data=loadjson('json/Virulence.json');
-    stats=loadjson('json/Sniper_old4pc_bis.json');
+    data=json.loadjson('json/Virulence.json');
+    stats=json.loadjson('json/Sniper_old4pc_bis.json');
 end
 for i = 1:loops
-    a=Virulence(data);
+    a=Simulator.Virulence(data);
     a.stats=stats;
 %    a.LoadStats('LunaStats.json');
 %     a=DFRotationClass();

@@ -296,10 +296,11 @@
 			"Dur": 6,
 			"CD": 20
 		},
-		"FT": {
+		"PC2": {
 			"LastProc": -1,
 			"Dur": 15,
-			"CD": 30
+			"CD": 30,
+            "Available": 0
 		}
 	}
 }
