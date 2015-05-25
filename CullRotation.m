@@ -22,7 +22,7 @@ end
         %a=DFRotationClass();
 
         a=Simulator.Virulence(data);
-        a.autocrit_charges=2;
+        a.autocrit_charges=1;
         a.raid_armor_pen=0.2;
         a.stats=stats;
         %a.UseLazeTarget();
@@ -42,7 +42,7 @@ end
             elseif(strcmp(txt,'Lethal Shot')||strcmp(txt,'Dirty Blast'))
                 a.UseLethalShot();
             elseif(strcmp(txt,'Cull')||strcmp(txt,'Wounding Shots'))
-                a.AddDelay(0.175)
+                a.AddDelay(0.3)
                 [isCast,CDLeft]=a.UseCull();
                 if(~isCast)
                     a.activations{end+1}={a.nextCast,'Delayed Cull'};
@@ -79,6 +79,7 @@ end
             elseif(max(size(strfind(txt,'Adrenal')))>0)
                 a.UseAdrenal();
             else
+                a.extra_abilities=a.extra_abilities+1;
                 %disp(['unknown ' txt]);
             end
             
