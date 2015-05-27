@@ -3,7 +3,7 @@ classdef Tactics < Simulator.Vanguard
     %   Detailed explanation goes here
     
     properties
-        missiles_loaded=0;
+        
     end
 
     methods

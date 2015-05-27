@@ -34,6 +34,9 @@ classdef BaseSimulator < handle
         avail=struct();
         extra_abilities=0;
         allow_dmg_past_total_HP=0;
+        energy = struct('me',0,'ce',0,'next_tick',0);
+        energy_enabled = 0;
+        cooldown_enabled = 1;
     end
     
     methods
@@ -43,6 +46,9 @@ classdef BaseSimulator < handle
 %%%%%%%%%%%%%%
 %%%Callbacks to subclass
 %%%%%%%%%%%%%%
+        function EnergyCheck(obj,t)
+            
+        end
         function DOTCheckCB(obj,t,it,dot)
             %Callback right AFTER a dot has ticked and the damage is
             %applied (used for double tick dart in virulence)
@@ -271,6 +277,7 @@ classdef BaseSimulator < handle
         end
 
         function DOTCheck(obj,t)
+           EnergyCheck(obj,t);
            fn=fieldnames(obj.dots);
            for i = 1:size(fn,1)
               dot = fn{i};
@@ -478,7 +485,8 @@ classdef BaseSimulator < handle
             end
             
             %Calculate Crit Chance
-            mhc = max(rand()<(obj.stats.CritChance+it.cb+bc),autocrit);
+            nm=it.name;
+            mhc = min(max(rand()<(obj.stats.CritChance+it.cb+bc),autocrit),1);
             CritCallback(obj,t,it,bc,mhc,ohc)
             mhd = (rand()*(mhx-mhm)+mhm)...    %Randomize hit between max and min
                   *(1+(s_.Surge+it.sb)*mhc)... %Apply Crit Multiplier
@@ -493,15 +501,18 @@ classdef BaseSimulator < handle
                 ohd=ohd*1.02;
             end;
             
-            %Apply Raid multipliers
-            mhd=mhd*it.raid_mult;
-            ohd=ohd*it.raid_mult;
-            
             %Sub 30% damage multiplier
             if(obj.total_damage>obj.total_HP*0.7)
                 mhd=mhd*(1+it.s30);
                 ohd=ohd*(1+it.s30);
             end
+%             mhd=round(mhd);
+%             ohd=round(ohd);
+            %Apply Raid multipliers
+            mhd=mhd*it.raid_mult;
+            ohd=ohd*it.raid_mult;
+            
+
             
             %Apply Boss Damage Reduction 
             if(it.dmg_type==1||it.dmg_type==2)
@@ -548,8 +559,12 @@ classdef BaseSimulator < handle
                 mn=mn*it.ticks;
                 mx=mx*it.ticks;
             elseif(it.ctype==4)
-                mn=mn*(it.dur/it.int+1);
-                mx=mx*(it.dur/it.int+1);
+                s=1;
+                if(isfield(it,'initial_tick')&&it.initial_tick==0)
+                    s=0;
+                end
+                mn=mn*(it.dur/it.int+s);
+                mx=mx*(it.dur/it.int+s);
             end
             
             fprintf('%.1f %.1f %.1f\n',mn,mx,mhd);
