@@ -1,5 +1,6 @@
 function [rot]=ParselyParser(id,parse)
     data=urlread(['http://parsely.io/parser/view/' num2str(id) '/' num2str(parse)]);
+    url=['http://parsely.io/parser/view/' num2str(id) '/' num2str(parse)];
     a=strfind(data,'<div role="tabpanel" class="tab-pane" id="rotation">');
     b=strfind(data,'<tbody>');
     c=min(b(b>a));
@@ -14,7 +15,7 @@ function [rot]=ParselyParser(id,parse)
         rot{i}=z(strfind(z,'</td><td>')+9:end-6);
     end
     if(numel(rot{end})==0)
-        rot=rot{1:end-1};
+        rot=rot(1:end-1);
     end
     fprintf('NOTE: Sometimes Parsely does not have the first ability in the rotation.\nIt is up to you to perform a sanity check\n'); 
     
