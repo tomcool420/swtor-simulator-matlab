@@ -18,10 +18,10 @@ classdef Tactics < Simulator.Vanguard
                 if(ismember(z,'Vanguard'))
                     LoadAbilities(obj,'json/Tactics.json')
                 else
-                    LoadAbilities(obj,'json/Tactics.json')
+                    LoadAbilities(obj,'json/AP.json')
                 end
             end
-            obj.autocrit_abilities = {'Cell Burst','Fire Pulse'};
+            obj.autocrit_abilities = {'Cell Burst','Fire Pulse','Energy Burst'};
             obj.raid_armor_pen=0.2;
         end
         function PreloadMissiles(obj)

@@ -15,7 +15,7 @@
 			"ct": 0,
 			"base_acc": 1,
 			"raid_mult": 1.05,
-			"name": "Tactical Surge",
+			"name": "Magnetic Blast",
 			"dmg_type": 1,
 			"callback": "ProcCallback",
 			"id": "tacsurge",
@@ -37,7 +37,7 @@
 			"ct": 0,
 			"base_acc": 1,
 			"raid_mult": 1.05,
-			"name": "Stock Strike",
+			"name": "Rocket Punch",
 			"dmg_type": 1,
 			"callback": "ProcCallback",
 			"id": "stockstrike"
@@ -58,7 +58,7 @@
 			"ct": 0,
 			"base_acc": 1,
 			"raid_mult": 1,
-			"name": "Gut",
+			"name": "Retractable Blade",
 			"dmg_type": 1,
 			"id": "gut",
 			"callback": "GUTCallback"
@@ -82,7 +82,7 @@
 			"CD": 0,
 			"base_acc": 1,
 			"raid_mult": 1.12,
-			"name": "Gut DOT",
+			"name": "RBlade DOT",
 			"dmg_type": 3
 		},
 		"cb": {
@@ -100,7 +100,7 @@
 			"ct": 0,
 			"base_acc": 1,
 			"raid_mult": 1.05,
-			"name": "Cell Burst",
+			"name": "Energy Burst",
 			"dmg_type": 1,
 			"charges": 0,
 			"callback": "CBCallback",
@@ -122,7 +122,7 @@
 			"ct": 0,
 			"base_acc": 1,
 			"raid_mult": 1.05,
-			"name": "High Impact Bolt",
+			"name": "Rail Shot",
 			"dmg_type": 1,
 			"callback": "HIBCallback",
 			"armor_pen": 1,
@@ -144,11 +144,11 @@
 			"ct": 0,
 			"base_acc": 0.9,
 			"raid_mult": 1.05,
-			"name": "Hammer Shot",
+			"name": "Rapid Shots",
 			"dmg_type": 1,
 			"id": "hammershot",
 			"CD": 0,
-			"ticks": 7
+			"ticks": 5
 		},
 		"ap": {
 			"c": 2.48,
@@ -165,7 +165,7 @@
 			"ct": 0,
 			"base_acc": 1,
 			"raid_mult": 1.05,
-			"name": "Assault Plastique",
+			"name": "Thermal Detonator",
 			"dmg_type": 1,
 			"id": "assaultplastique",
 			"CD": 15,
