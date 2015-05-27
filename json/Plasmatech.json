@@ -14,11 +14,14 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.12,
+			"raid_mult": 1,
 			"name": "Ion Pulse",
 			"dmg_type": 3,
 			"id": "ionpulse",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"hs": {
 			"c": 1,
@@ -39,7 +42,10 @@
 			"name": "Hammer Shot",
 			"dmg_type": 1,
 			"id": "hammershot",
-			"ticks": 7
+			"ticks": 7,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"iri": {
 			"c": 0.41,
@@ -57,10 +63,13 @@
 			"id": "incendiaryroundinitial",
 			"CD": 9,
 			"base_acc": 1,
-			"raid_mult": 1.12,
+			"raid_mult": 1,
 			"name": "Incendiary Round",
 			"dmg_type": 3,
-			"callback": "IRCallback"
+			"callback": "IRCallback",
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"ird": {
 			"c": 0.34,
@@ -83,7 +92,10 @@
 			"base_acc": 1,
 			"raid_mult": 1.123,
 			"name": "Incendiary Round DOT",
-			"dmg_type": 3
+			"dmg_type": 3,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"pt": {
 			"c": 0.37,
@@ -103,10 +115,13 @@
 			"raid_mult": 1,
 			"ctype": 4,
 			"ct": 0,
-			"mult": 1.123,
+			"mult": 1,
 			"CD": 0,
 			"dur": 30,
-			"int": 3
+			"int": 3,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"sc": {
 			"c": 0.98,
@@ -122,12 +137,15 @@
 			"ctype": -1,
 			"ct": 0,
 			"base_acc": 0.9,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Shoulder Cannon",
 			"dmg_type": 2,
 			"id": "shouldercannon",
 			"CD": 0,
-			"hits": 3
+			"hits": 3,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"hib": {
 			"c": 1.97,
@@ -143,12 +161,15 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "High Implact Bolt",
 			"dmg_type": 1,
 			"id": "hib",
 			"CD": 0,
-			"armor_pen": 0.6
+			"armor_pen": 0.6,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"fp": {
 			"c": 1.74,
@@ -164,11 +185,14 @@
 			"ctype": 1,
 			"ct": 2,
 			"base_acc": 1,
-			"raid_mult": 1.12,
+			"raid_mult": 1,
 			"name": "Fire Pulse",
 			"dmg_type": 3,
 			"id": "firepulse",
-			"CD": 15
+			"CD": 15,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"pc": {
 			"c": 0.555,
@@ -187,10 +211,13 @@
 			"CD": 0,
 			"initial_tick": 0,
 			"base_acc": 1,
-			"raid_mult": 1.2358,
+			"raid_mult": 1,
 			"name": "Pulse Cannon",
 			"dmg_type": 3,
-			"ticks": 4
+			"ticks": 4,
+			"raidAOE": 1,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"ssk": {
 			"c": 1.78,
@@ -212,7 +239,10 @@
 			"raid_mult": 1,
 			"name": "Shockstrike",
 			"dmg_type": 1,
-			"callback": "ShockCallback"
+			"callback": "ShockCallback",
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"ssi": {
 			"c": 0.41,
@@ -231,9 +261,12 @@
 			"CD": 0,
 			"initial_tick": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Shockstrike ele",
-			"dmg_type": 3
+			"dmg_type": 3,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"pcd": {
 			"c": 0.1715,
@@ -254,9 +287,12 @@
 			"int": 3,
 			"dur": 6,
 			"base_acc": 1,
-			"raid_mult": 1.13,
+			"raid_mult": 1,
 			"name": "Plasma Cell",
-			"dmg_type": 3
+			"dmg_type": 3,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		}
 	},
 	"dots": {

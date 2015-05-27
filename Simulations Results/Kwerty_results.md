@@ -1,119 +1,157 @@
+#Tactis Rotation Simulation
+Using the parse and gear provided by Kwerty, The following attempts were made at 1) reproducing the results and 2) predicting future results
+Each combination was run 2500 times to provide nice statistics. For each of the tables, 
+
+#     number of hits for an ability
+d     total damage
+n     non crit hits
+nd    normal damage
+avg n average normal hit
+c     number of crits
+cd    total critical damage
+cc    crit percentage
+avg c average crit
+%     percentage of total damage
+
+Since tactics does NOT have a sub 30% boost, letting the parse run past the end of the dummy HP is fine.
 ##Kwerty NO Relic/Adrenal APM Free - Mean Result
-mean 4682, standard dev 110
-This involved just grabbing the rotation from parsely and running it through the code, assuming perfect, no ability delay.
-158 cast on the GCD, factoring in 8.33% alacrity (158*1.5)/(1+0.0833)=218s
-![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Kwerty_NoDelay_No_Relics_Adrenal.png)
+Grabbing the rotation straight from Parsely, and then plugging it into the code, we obtain a mean of 4631.83 DPS with a standard deviation of 106.83. 
+That means that around 68% of the parses would be between 4524.17 and 4737.83.
+This result would be very difficult to replicate as it is near impossible to have no ability delay. That being said, in the future, when testing rotations, this is probably the best way to compare them.
+As a sanity check: 158 cast on the GCD, factoring in 8.33% alacrity (158*1.5)/(1+0.0833)=218s
+![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_NoDelay_No_Relics_Adrenal.png)
 ```
-STATS: time - 218.191, damage = 1021431.168, DPS = 4681.356, APM =  51.42, Crit = 0.35
+STATS: time - 218.191, damage = 1010543.374, DPS = 4631.456, APM =  51.42, Crit = 0.33
 ===============================================================================================================
 | Ability               #        d         n     nd        avg n    c    cd           cc       avg c       %
 ===============================================================================================================
-| Gut                 : 1          1638.1  1      1638.06  1638.06  0        0.00      0.00%       NaN      0.2
-| Gut_DOT             : 113      121462.8  71    55999.05   788.72  42   65463.79     37.17%   1558.66     11.9
-| Assault_Plastique   : 16       100736.7  10    46354.20  4635.42  6    54382.50     37.50%   9063.75      9.9
-| High_Impact_Bolt    : 40       275439.7  26   133929.95  5151.15  14  141509.76     35.00%  10107.84     27.0
-| Stock_Strike        : 26       129035.9  17    63434.48  3731.44  9    65601.44     34.62%   7289.05     12.6
-| Tactical_Surge      : 54       224190.2  37   117945.72  3187.72  17  106244.51     31.48%   6249.68     21.9
-| Cell_Burst          : 10        94627.9  5     35046.67  7009.33  5    59581.21     50.00%  11916.24      9.3
-| Shoulder_Cannon     : 19        53727.0  10    21410.13  2141.01  9    32316.91     47.37%   3590.77      5.3
-| Hammer_Shot         : 77        20572.8  44    10908.56   247.92  23    9664.22     29.87%    420.18      2.0
+| Assault_Plastique   : 16        96010.5  11    50690.05  4608.19  5    45320.42     31.25%   9064.08      9.5
+| Cell_Burst          : 10        71138.3  7     43773.13  6253.30  3    27365.21     30.00%   9121.74      7.0
+| Gut                 : 1          1632.5  1      1632.46  1632.46  0        0.00      0.00%       NaN      0.2
+| Gut_DOT             : 113      121393.8  71    56070.08   789.72  42   65323.72     37.17%   1555.33     12.0
+| Hammer_Shot         : 77        19842.5  52    13148.95   252.86  16    6693.59     20.78%    418.35      2.0
+| High_Impact_Bolt    : 40       284614.1  24   121799.62  5074.98  16  162814.46     40.00%  10175.90     28.2
+| Shoulder_Cannon     : 19        50654.7  12    25697.91  2141.49  7    24956.77     36.84%   3565.25      5.0
+| Stock_Strike        : 26       133190.5  16    59817.42  3738.59  10   73373.09     38.46%   7337.31     13.2
+| Tactical_Surge      : 54       232066.5  35   111745.33  3192.72  19  120321.17     35.19%   6332.69     23.0
 ===============================================================================================================
 ```
 
-##Kwerty NO Relic/Adrenal With an 0.237s delay added before each HiB (match avg parse delay)
-Mean DPS of 4582 with a Standard deviation of 104.8
-![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Kwerty_HiBDelay_No_Relics_Adrenal.png)
+##Kwerty NO Relic/Adrenal 
+To match Kwerty's parse, we add a small delay of 0.237s before each HiB (lines up with his rotation average).
+Doing that gives us an average of 4480.37 with a standard deviation of 103.47
+![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_HiBDelay_No_Relics_Adrenal.png)
 
 ###Best Result
 ```
-STATS: time - 226.871, damage = 1114941.694, DPS = 4914.424, APM =  49.46, Crit = 0.39
+STATS: time - 226.871, damage = 1109358.885, DPS = 4889.816, APM =  49.46, Crit = 0.42
 ===============================================================================================================
 | Ability               #        d         n     nd        avg n    c    cd           cc       avg c       %
 ===============================================================================================================
-| Gut                 : 1          1624.0  1      1624.01  1624.01  0        0.00      0.00%       NaN      0.1
-| Gut_DOT             : 113      116896.8  77    60728.85   788.69  36   56167.92     31.86%   1560.22     10.5
-| Assault_Plastique   : 16       100399.1  10    46018.72  4601.87  6    54380.40     37.50%   9063.40      9.0
-| High_Impact_Bolt    : 40       308712.5  19    97982.50  5156.97  21  210730.00     52.50%  10034.76     27.7
-| Stock_Strike        : 26       143987.4  13    48452.26  3727.10  13   95535.15     50.00%   7348.86     12.9
-| Tactical_Surge      : 54       243356.4  31    98728.14  3184.78  23  144628.22     42.59%   6288.18     21.8
-| Cell_Burst          : 10       121831.3  1      6956.17  6956.17  9   114875.18     90.00%  12763.91     10.9
-| Shoulder_Cannon     : 19        57224.6  8     17463.43  2182.93  11   39761.19     57.89%   3614.65      5.1
-| Hammer_Shot         : 77        20909.6  50    12485.69   249.71  20    8423.87     25.97%    421.19      1.9
+| Assault_Plastique   : 16       109462.7  8     36957.29  4619.66  8    72505.40     50.00%   9063.17      9.9
+| Cell_Burst          : 10       108262.0  1      6285.67  6285.67  9   101976.35     90.00%  11330.71      9.8
+| Gut                 : 1          3249.0  0         0.00      NaN  1     3248.97    100.00%   3248.97      0.3
+| Gut_DOT             : 113      119905.2  73    57633.43   789.50  40   62271.78     35.40%   1556.79     10.8
+| Hammer_Shot         : 77        21919.3  48    11956.76   249.10  24    9962.50     31.17%    415.10      2.0
+| High_Impact_Bolt    : 40       296698.0  22   113959.89  5180.00  18  182738.11     45.00%  10152.12     26.7
+| Shoulder_Cannon     : 19        54047.5  10    21366.14  2136.61  9    32681.35     47.37%   3631.26      4.9
+| Stock_Strike        : 26       140061.1  14    52146.71  3724.76  12   87914.35     46.15%   7326.20     12.6
+| Tactical_Surge      : 54       255754.2  27    86312.32  3196.75  27  169441.87     50.00%   6275.62     23.1
 ===============================================================================================================
 ```
 
 ###Worst Result
 ```
-STATS: time - 226.871, damage = 945671.702, DPS = 4168.318, APM =  49.46, Crit = 0.29
+STATS: time - 226.871, damage = 943824.015, DPS = 4160.174, APM =  49.46, Crit = 0.29
 ===============================================================================================================
 | Ability               #        d         n     nd        avg n    c    cd           cc       avg c       %
 ===============================================================================================================
-| Gut                 : 1          1567.7  1      1567.74  1567.74  0        0.00      0.00%       NaN      0.2
-| Gut_DOT             : 113      117656.5  76    59947.18   788.78  37   57709.30     32.74%   1559.71     12.4
-| Assault_Plastique   : 16        91507.5  12    55289.39  4607.45  4    36218.09     25.00%   9054.52      9.7
-| High_Impact_Bolt    : 40       242983.0  32   161873.56  5058.55  8    81109.41     20.00%  10138.68     25.7
-| Stock_Strike        : 26       114934.6  21    78386.66  3732.70  5    36547.93     19.23%   7309.59     12.2
-| Tactical_Surge      : 54       209754.0  42   133861.96  3187.19  12   75892.07     22.22%   6324.34     22.2
-| Cell_Burst          : 10        95031.7  5     35110.52  7022.10  5    59921.14     50.00%  11984.23     10.0
-| Shoulder_Cannon     : 19        48288.7  14    30275.66  2162.55  5    18013.04     26.32%   3602.61      5.1
-| Hammer_Shot         : 77        23948.0  49    12205.57   249.09  28   11742.48     36.36%    419.37      2.5
+| Assault_Plastique   : 16        91504.2  12    55281.69  4606.81  4    36222.55     25.00%   9055.64      9.7
+| Cell_Burst          : 10        83734.0  5     31249.42  6249.88  5    52484.57     50.00%  10496.91      8.9
+| Gut                 : 1          1623.9  1      1623.91  1623.91  0        0.00      0.00%       NaN      0.2
+| Gut_DOT             : 113      112186.6  83    65575.22   790.06  30   46611.36     26.55%   1553.71     11.9
+| Hammer_Shot         : 77        22805.4  45    11278.61   250.64  27   11526.80     35.06%    426.92      2.4
+| High_Impact_Bolt    : 40       243592.7  32   162751.27  5085.98  8    80841.42     20.00%  10105.18     25.8
+| Shoulder_Cannon     : 19        53160.2  11    23869.32  2169.94  8    29290.84     42.11%   3661.36      5.6
+| Stock_Strike        : 26       125673.0  18    66914.39  3717.47  8    58758.58     30.77%   7344.82     13.3
+| Tactical_Surge      : 54       209544.1  42   134028.34  3191.15  12   75515.74     22.22%   6292.98     22.2
 ===============================================================================================================
 ```
 
 ###Average Result
 ````
-STATS: time - 226.871, damage = 1027575.800, DPS = 4529.334, APM =  49.46, Crit = 0.37
+STATS: time - 226.871, damage = 1016564.765, DPS = 4480.799, APM =  49.46, Crit = 0.34
 ===============================================================================================================
 | Ability               #        d         n     nd        avg n    c    cd           cc       avg c       %
 ===============================================================================================================
-| Gut                 : 1          1647.0  1      1646.98  1646.98  0        0.00      0.00%       NaN      0.2
-| Gut_DOT             : 113      118333.3  75    59250.81   790.01  38   59082.47     33.63%   1554.80     11.5
-| Assault_Plastique   : 16        96119.1  11    50452.28  4586.57  5    45666.80     31.25%   9133.36      9.4
-| High_Impact_Bolt    : 40       272824.0  26   132270.35  5087.32  14  140553.60     35.00%  10039.54     26.6
-| Stock_Strike        : 26       132987.6  16    59582.72  3723.92  10   73404.90     38.46%   7340.49     12.9
-| Tactical_Surge      : 54       227574.1  36   114534.95  3181.53  18  113039.18     33.33%   6279.95     22.1
-| Cell_Burst          : 10        95498.4  5     35184.09  7036.82  5    60314.35     50.00%  12062.87      9.3
-| Shoulder_Cannon     : 19        60016.1  6     13014.46  2169.08  13   47001.68     68.42%   3615.51      5.8
-| Hammer_Shot         : 77        22576.2  40     9889.91   247.25  30   12686.29     38.96%    422.88      2.2
+| Assault_Plastique   : 16        96523.1  11    50576.15  4597.83  5    45946.97     31.25%   9189.39      9.5
+| Cell_Burst          : 10        83546.4  5     31177.87  6235.57  5    52368.57     50.00%  10473.71      8.2
+| Gut                 : 1          1625.3  1      1625.34  1625.34  0        0.00      0.00%       NaN      0.2
+| Gut_DOT             : 113      117671.7  76    59931.54   788.57  37   57740.12     32.74%   1560.54     11.6
+| Hammer_Shot         : 77        20243.2  49    12155.89   248.08  19    8087.32     24.68%    425.65      2.0
+| High_Impact_Bolt    : 40       273174.1  26   132722.35  5104.71  14  140451.79     35.00%  10032.27     26.9
+| Shoulder_Cannon     : 19        58961.6  7     15350.33  2192.90  12   43611.23     63.16%   3634.27      5.8
+| Stock_Strike        : 26       140212.2  14    52255.95  3732.57  12   87956.30     46.15%   7329.69     13.8
+| Tactical_Surge      : 54       224607.0  37   117755.40  3182.58  17  106851.63     31.48%   6285.39     22.1
 ===============================================================================================================
 ```
 (within 50 dps of his actual parse)
 
-## Adding 2 imaginary relics in code
-Mean is 4843.3 DPS, STD is 111 and the max was 5200 (lol)
-![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Kwerty_HiBDelay_Relics_No_Adrenal.png)
+## Adding 2 Revanite Relics + 2 power augments 
+Mean is 4784.18 DPS, STD is 112 and the max was 5131 - Unsuprisingly you'd need, ON AVERAGE around 2K parses to have one 3 stdevs above the mean
+![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_HiBDelay_Relics_No_Adrenal.png)
 
 ```
-STATS: time - 226.871, damage = 1098688.279, DPS = 4842.782, APM =  49.46, Crit = 0.32
+STATS: time - 226.871, damage = 1085283.186, DPS = 4783.695, APM =  49.46, Crit = 0.35
 ===============================================================================================================
 | Ability               #        d         n     nd        avg n    c    cd           cc       avg c       %
 ===============================================================================================================
-| Gut                 : 1          3271.3  0         0.00      NaN  1     3271.27    100.00%   3271.27      0.3
-| Gut_DOT             : 113      125314.3  78    65832.70   844.01  35   59481.61     30.97%   1699.47     11.4
-| Assault_Plastique   : 16       108723.0  10    49690.50  4969.05  6    59032.51     37.50%   9838.75      9.9
-| High_Impact_Bolt    : 40       304166.4  23   123999.40  5391.28  17  180167.03     42.50%  10598.06     27.7
-| Stock_Strike        : 26       131226.3  19    75528.00  3975.16  7    55698.32     26.92%   7956.90     11.9
-| Tactical_Surge      : 54       236725.4  39   134186.54  3440.68  15  102538.84     27.78%   6835.92     21.5
-| Cell_Burst          : 10       110747.1  4     32064.43  8016.11  6    78682.71     60.00%  13113.78     10.1
-| Shoulder_Cannon     : 19        57716.1  10    23475.47  2347.55  9    34240.66     47.37%   3804.52      5.3
-| Hammer_Shot         : 77        20798.3  50    13156.35   263.13  18    7641.94     23.38%    424.55      1.9
+| Assault_Plastique   : 16       107749.2  10    50007.11  5000.71  6    57742.06     37.50%   9623.68      9.9
+| Cell_Burst          : 10        89963.7  5     34354.37  6870.87  5    55609.31     50.00%  11121.86      8.3
+| Gut                 : 1          1689.7  1      1689.71  1689.71  0        0.00      0.00%       NaN      0.2
+| Gut_DOT             : 113      124409.2  79    66917.70   847.06  34   57491.46     30.09%   1690.93     11.5
+| Hammer_Shot         : 77        23045.6  43    11192.56   260.29  27   11853.05     35.06%    439.00      2.1
+| High_Impact_Bolt    : 40       291893.4  25   134652.77  5386.11  15  157240.62     37.50%  10482.71     26.9
+| Shoulder_Cannon     : 19        56612.4  11    25633.37  2330.31  8    30979.00     42.11%   3872.38      5.2
+| Stock_Strike        : 26       144377.8  16    62916.22  3932.26  10   81461.54     38.46%   8146.15     13.3
+| Tactical_Surge      : 54       245542.3  36   125357.24  3482.15  18  120185.11     33.33%   6676.95     22.6
 ===============================================================================================================
 ```
 
 ###Max
 ```
-STATS: time - 226.871, damage = 1187481.173, DPS = 5234.162, APM =  49.46, Crit = 0.42
+STATS: time - 226.871, damage = 1164297.662, DPS = 5131.974, APM =  49.46, Crit = 0.38
 ===============================================================================================================
 | Ability               #        d         n     nd        avg n    c    cd           cc       avg c       %
 ===============================================================================================================
-| Gut                 : 1          1622.9  1      1622.91  1622.91  0        0.00      0.00%       NaN      0.1
-| Gut_DOT             : 113      134963.3  66    56077.82   849.66  47   78885.49     41.59%   1678.41     11.4
-| Assault_Plastique   : 16       118220.6  8     40847.54  5105.94  8    77373.07     50.00%   9671.63     10.0
-| High_Impact_Bolt    : 40       302831.6  24   129847.05  5410.29  16  172984.58     40.00%  10811.54     25.5
-| Stock_Strike        : 26       147413.0  15    58059.30  3870.62  11   89353.66     42.31%   8123.06     12.4
-| Tactical_Surge      : 54       281310.4  26    88508.39  3404.17  28  192801.97     51.85%   6885.78     23.7
-| Cell_Burst          : 10       125010.0  2     16293.04  8146.52  8   108716.98     80.00%  13589.62     10.5
-| Shoulder_Cannon     : 19        53703.5  12    27936.46  2328.04  7    25767.05     36.84%   3681.01      4.5
-| Hammer_Shot         : 77        22405.9  44    11896.29   270.37  24   10509.57     31.17%    437.90      1.9
+| Assault_Plastique   : 16       121687.1  7     36958.59  5279.80  9    84728.54     56.25%   9414.28     10.5
+| Cell_Burst          : 10       120033.0  1      6937.42  6937.42  9   113095.60     90.00%  12566.18     10.3
+| Gut                 : 1          1670.1  1      1670.06  1670.06  0        0.00      0.00%       NaN      0.1
+| Gut_DOT             : 113      124824.0  78    66645.07   854.42  35   58178.94     30.97%   1662.26     10.7
+| Hammer_Shot         : 77        22954.5  46    12300.87   267.41  24   10653.62     31.17%    443.90      2.0
+| High_Impact_Bolt    : 40       310640.1  22   120101.17  5459.14  18  190538.92     45.00%  10585.50     26.7
+| Shoulder_Cannon     : 19        56671.4  10    22208.72  2220.87  9    34462.66     47.37%   3829.18      4.9
+| Stock_Strike        : 26       157843.4  12    48334.94  4027.91  14  109508.46     53.85%   7822.03     13.6
+| Tactical_Surge      : 54       247974.1  35   119234.02  3406.69  19  128740.05     35.19%   6775.79     21.3
+===============================================================================================================
+```
+
+##No Delay+Relics (still no adrenal)
+We'd have a mean of 4945 DPS with a standard deviation of 114.93 (obviously almost impossible but best way to compare between specs)
+![Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_NoDelay_Relics_No_Adrenal.png)
+```
+STATS: time - 218.191, damage = 1079393.412, DPS = 4947.005, APM =  51.42, Crit = 0.34
+===============================================================================================================
+| Ability               #        d         n     nd        avg n    c    cd           cc       avg c       %
+===============================================================================================================
+| Assault_Plastique   : 16       101625.9  11    53094.95  4826.81  5    48530.94     31.25%   9706.19      9.4
+| Cell_Burst          : 10        94090.0  5     35365.92  7073.18  5    58724.08     50.00%  11744.82      8.7
+| Gut                 : 1          3240.6  0         0.00      NaN  1     3240.59    100.00%   3240.59      0.3
+| Gut_DOT             : 113      125227.9  77    65051.52   844.82  36   60176.39     31.86%   1671.57     11.6
+| Hammer_Shot         : 77        22029.6  47    12339.24   262.54  22    9690.35     28.57%    440.47      2.0
+| High_Impact_Bolt    : 40       288956.8  25   136515.60  5460.62  15  152441.23     37.50%  10162.75     26.8
+| Shoulder_Cannon     : 19        55269.1  11    25351.31  2304.66  8    29917.80     42.11%   3739.72      5.1
+| Stock_Strike        : 26       159217.3  12    48710.30  4059.19  14  110506.96     53.85%   7893.35     14.8
+| Tactical_Surge      : 54       229736.2  40   135742.38  3393.56  14   93993.85     25.93%   6713.85     21.3
 ===============================================================================================================
 ```
