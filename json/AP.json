@@ -14,12 +14,15 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Magnetic Blast",
 			"dmg_type": 1,
 			"callback": "ProcCallback",
 			"id": "tacsurge",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"ss": {
 			"c": 1.77,
@@ -36,11 +39,14 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Rocket Punch",
 			"dmg_type": 1,
 			"callback": "ProcCallback",
-			"id": "stockstrike"
+			"id": "stockstrike",
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"gut": {
 			"c": 0.95,
@@ -61,7 +67,10 @@
 			"name": "Retractable Blade",
 			"dmg_type": 1,
 			"id": "gut",
-			"callback": "GUTCallback"
+			"callback": "GUTCallback",
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"gutd": {
 			"c": 0.25,
@@ -81,9 +90,12 @@
 			"id": "gutdot",
 			"CD": 0,
 			"base_acc": 1,
-			"raid_mult": 1.12,
+			"raid_mult": 1,
 			"name": "RBlade DOT",
-			"dmg_type": 3
+			"dmg_type": 3,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"cb": {
 			"c": 0.84,
@@ -99,13 +111,16 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Energy Burst",
 			"dmg_type": 1,
 			"charges": 0,
 			"callback": "CBCallback",
 			"id": "cellburst",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"hib": {
 			"c": 1.97,
@@ -121,13 +136,16 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Rail Shot",
 			"dmg_type": 1,
 			"callback": "HIBCallback",
 			"armor_pen": 1,
 			"id": "hib",
-			"CD": 15
+			"CD": 15,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"hs": {
 			"c": 1,
@@ -143,12 +161,15 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 0.9,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Rapid Shots",
 			"dmg_type": 1,
 			"id": "hammershot",
 			"CD": 0,
-			"ticks": 5
+			"ticks": 5,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"ap": {
 			"c": 2.48,
@@ -164,14 +185,18 @@
 			"ctype": 4,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Thermal Detonator",
 			"dmg_type": 1,
 			"id": "assaultplastique",
 			"CD": 15,
 			"int": 3,
 			"dur": 3,
-			"initial_tick": 0
+			"initial_tick": 0,
+			"enters_combat": 1,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"sc": {
 			"c": 0.98,
@@ -191,7 +216,10 @@
 			"name": "Shoulder Cannon",
 			"dmg_type": 1,
 			"id": "shouldercannon",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		}
 	},
 	"dots": {

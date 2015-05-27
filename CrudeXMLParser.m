@@ -28,10 +28,11 @@ else
 end
 for i = 1:numel(out)
     obj=out{i};
-    fprintf('%s=struct(''c'',%.3f,''Sm'',%.3f,''Sx'',%.3f,''am'',%.3f,''Sh'',3185,...\n',obj.id(1:3),obj.c,obj.Sm,obj.Sx,obj.am);
+    fprintf('%s=struct(''c'',%.3f,''Sm'',%.3f,''Sx'',%.3f,''Am'',%.3f,''Sh'',3185,...\n',obj.id(1:3),obj.c,obj.Sm,obj.Sx,obj.am);
     fprintf('         ''w'',%.0f,''long_id'',''%s'',''id'',''%s'',''name'',''%s'',...\n',obj.w,obj.long_id,obj.id,obj.name);
     fprintf('         ''cb'',0.0,''sb'',0.0,''s30'',0.0,''dmg_type'',%.0f,''base_acc'',%.1f,''raid_mult'',1.0,...\n',obj.dmg_type,obj.base_acc);
-    fprintf('         ''ctype'',0,''ct'',0.0,''mult'',1.0,''CD'',%f)\n',obj.CD);
+    fprintf('         ''ctype'',0,''ct'',0.0,''mult'',1.0,''CD'',%f,...\n',obj.CD);
+    fprintf('         ''raidAOE'',0,''raidIE'',%.0f,''raidKEFT'',1)\n',double(obj.dmg_type>=3));
 end
 
 

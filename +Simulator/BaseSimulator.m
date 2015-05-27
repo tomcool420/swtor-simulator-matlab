@@ -38,6 +38,7 @@ classdef BaseSimulator < handle
         energy_enabled = 0;
         cooldown_enabled = 1;
         continue_past_hp=0;
+        disable_ability_cds=0;
     end
     
     methods
@@ -70,8 +71,8 @@ classdef BaseSimulator < handle
             %Check if you have an accuracy debuff up;
             bacc=0;
         end
-        function [bd, bc,bs,bm]=CalculateBonus(obj,t,it,mhh,ohh)
-            bd=0;bc=0;bs=0;bm=1;
+        function [bd, bc,bs,bm,badd]=CalculateBonus(obj,t,it,mhh,ohh)
+            bd=0;bc=0;bs=0;bm=1;badd=0;
         end
         function CritCallback(obj,t,it,bc,mhc,ohc)
             %Function that gets called in case something special needs to
@@ -134,6 +135,11 @@ classdef BaseSimulator < handle
             end
         end
         function [isAv,CDLeft]=isAvailable(obj,it)
+            if(obj.disable_ability_cds)
+               CDLeft=0;
+               isAv=1;
+               return;
+            end
             t=obj.nextCast;
             CDLeft=max(obj.avail.(it.id)-t,0);
             if(CDLeft<0.05)
@@ -493,22 +499,30 @@ classdef BaseSimulator < handle
             end
             
             %Calculate Crit Chance
+            divider = 1;
+            if(isfield(it,'divider'))
+                divider=it.divider;
+            end
             nm=it.name;
             mhc = min(max(rand()<(obj.stats.CritChance+it.cb+bc),autocrit),1);
             CritCallback(obj,t,it,bc,mhc,ohc)
             mhd = (rand()*(mhx-mhm)+mhm)...    %Randomize hit between max and min
                   *(1+(s_.Surge+it.sb)*mhc)... %Apply Crit Multiplier
                   *mhh...                      %Is it a hit?
-                  *bm;                         %Apply the multiplier
+                  *bm...                       %Apply the multiplier
+                  /divider;
             
 
             %2PC set bonus
+            pc2_add=0.0;
             if(isfield(obj.procs,'PC2') && ...
                 t<obj.procs.PC2.LastProc+15 && obj.procs.PC2.LastProc>=0)
-                mhd=mhd*1.02;
-                ohd=ohd*1.02;
+            pc2_add=0.02;
+%                 mhd=mhd*1.02;
+%                 ohd=ohd*1.02;
             end;
-            
+            mhd=mhd*(1+it.raidKEFT*.05+it.raidIE*0.07+pc2_add)*(1+.1*it.raidAOE);
+            ohd=ohd*(1+it.raidKEFT*.05+it.raidIE*0.07+pc2_add)*(1+.1*it.raidAOE);
             %Sub 30% damage multiplier
             if(obj.total_damage>obj.total_HP*0.7)
                 mhd=mhd*(1+it.s30);
@@ -517,9 +531,9 @@ classdef BaseSimulator < handle
 %             mhd=round(mhd);
 %             ohd=round(ohd);
             %Apply Raid multipliers
-            mhd=mhd*it.raid_mult;
-            ohd=ohd*it.raid_mult;
-            
+%             mhd=mhd*it.raid_mult;
+%             ohd=ohd*it.raid_mult;
+%             
 
             
             %Apply Boss Damage Reduction 
@@ -530,9 +544,12 @@ classdef BaseSimulator < handle
             end
        end
 
-       function [mhd,ohd] = CalculateBaseDamage(obj,it,crit)
+       function [mhd,ohd] = CalculateBaseDamage(obj,it,crit,raid)
             if(nargin<3)
                 crit=0;
+            end
+            if(nargin<4)
+                raid=0;
             end
             bonusdmg=0;
             bonusmult=0;
@@ -574,7 +591,9 @@ classdef BaseSimulator < handle
                 mn=mn*(it.dur/it.int+s);
                 mx=mx*(it.dur/it.int+s);
             end
-            
+            if(raid)
+                mhd=mhd*(1+it.raidKEFT*.05+it.raidIE*0.07)*(1+.1*it.raidAOE);
+            end
             fprintf('%.1f %.1f %.1f\n',mn,mx,mhd);
         end
         function AddToStats(obj,dmg)
