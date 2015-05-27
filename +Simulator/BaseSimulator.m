@@ -37,6 +37,7 @@ classdef BaseSimulator < handle
         energy = struct('me',0,'ce',0,'next_tick',0);
         energy_enabled = 0;
         cooldown_enabled = 1;
+        continue_past_hp=0;
     end
     
     methods
@@ -159,6 +160,9 @@ classdef BaseSimulator < handle
             end
             
             if(isfield(it,'initial_tick') && it.initial_tick==0)
+                if(numel(obj.activations)==0)
+                   AddDamage(obj,{0.0,'Dummy Fight Start',0,0,0})
+                end
             else
                 [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
                 AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
@@ -301,15 +305,19 @@ classdef BaseSimulator < handle
         end 
 
         function AddDamage(obj,dmg,it)
-            AddDamageCB(obj,dmg{1},dmg,it);
-            if(true)%obj.total_damage<obj.total_HP)
+            if(isstruct(it))
+                AddDamageCB(obj,dmg{1},dmg,it);
+            end
+            if(obj.total_damage<obj.total_HP || obj.continue_past_hp)
                 if(dmg{4}>0)
                     obj.crits=obj.crits+1;
                 end
                 obj.dmg_effects=obj.dmg_effects+1;
                 obj.total_damage=obj.total_damage+dmg{3};
                 obj.damage{end+1}=dmg;
-                AddToStats(obj,dmg);
+                if(isstruct(it))
+                    AddToStats(obj,dmg);
+                end
             end
         end
         
@@ -362,10 +370,10 @@ classdef BaseSimulator < handle
         end
         function PrintDetailedStats(obj)
             PrintStats(obj);
-            fprintf('%s\n',repmat('=',1,110));
-            ks=fieldnames(obj.out_stats_new);
-            fprintf('Ability%s#        d         n     nd        avg n    c    cd           cc       avg c       %%\n',repmat(' ',1,17));
-            fprintf('%s\n',repmat('=',1,110)); 
+            fprintf('%s\n',repmat('=',1,111));
+            ks=sort(fieldnames(obj.out_stats_new));
+            fprintf('| Ability%s#        d         n     nd        avg n    c    cd           cc       avg c       %%\n',repmat(' ',1,15));
+            fprintf('%s\n',repmat('=',1,111)); 
             for i = 1:max(size(ks))
                k=obj.out_stats_new.(ks{i});
                fprintf('| %-20s: %-5i  %10.1f  %-3i  %9.2f %8.2f  %-3i %9.2f %9.2f%%  %8.2f    %5.1f',...
@@ -375,7 +383,7 @@ classdef BaseSimulator < handle
                fprintf('\n')
                 
             end
-            fprintf('%s\n',repmat('=',1,110));
+            fprintf('%s\n',repmat('=',1,111));
             
         end
         function AddToActivations(obj,act)
