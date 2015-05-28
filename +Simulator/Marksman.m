@@ -109,6 +109,10 @@ classdef Marksman < Simulator.Sniper
             obj.CheckSniperVolley()
             [isCast,CDLeft]=ApplyInstantCast(obj,obj.abilities.rs);
         end
+        function [isCast,CDLeft]=UseXSFreighterFlyby(obj)
+           obj.CheckSniperVolley()
+           [isCast,CDLeft]=ApplyDot(obj,'XS',obj.abilities.xs);
+        end
         
 %%%%%%%%%%%%%%%%%
 %%% PUB ABILITIES

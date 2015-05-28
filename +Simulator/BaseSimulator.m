@@ -167,7 +167,9 @@ classdef BaseSimulator < handle
             
             if(isfield(it,'initial_tick') && it.initial_tick==0)
                 if(numel(obj.activations)==0)
-                   AddDamage(obj,{0.0,'Dummy Fight Start',0,0,0})
+                    if(~isfield(it,'entersCombat') || it.entersCombat~=0)
+                        AddDamage(obj,{0.0,'Dummy Fight Start',0,0,0})
+                    end
                 end
             else
                 [mhd,mhh,mhc]=CalculateDamage(obj,t,it);

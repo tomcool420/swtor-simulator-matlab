@@ -166,6 +166,34 @@
 			"raidAOE": 0,
 			"raidIE": 1,
 			"raidKEFT": 1
+		},
+		"xs": {
+			"c": 0.7,
+			"Sm": 0.07,
+			"Sx": 0.07,
+			"Am": 0,
+			"Sh": 3185,
+			"w": 0,
+			"long_id": "abl.exp.02.yavin_4.world_arc.the_enemy_within.theron_shan.xs_freighter_flyby",
+			"id": "xs_freighter_flyby",
+			"name": "XS Freighter Flyby",
+			"cb": 0,
+			"sb": 0,
+			"s30": 0,
+			"dmg_type": 3,
+			"base_acc": 1,
+			"raid_mult": 1,
+			"ctype": 4,
+			"ct": 2,
+			"mult": 1,
+			"CD": 45,
+			"int": 3,
+			"dur": 9,
+			"initial_tick": 0,
+			"entersCombat": 0,
+			"raidAOE": 1,
+			"raidIE": 1,
+			"raidKEFT": 1
 		}
 	},
 	"dots": {
@@ -176,6 +204,14 @@
 			"WExpire": -1,
 			"Ala": 1,
 			"it": "cd"
+		},
+		"XS": {
+			"LastUsed": -1,
+			"NextTick": -1,
+			"Expire": -1,
+			"WExpire": -1,
+			"Ala": 1,
+			"it": "xs"
 		}
 	},
 	"buffs": {
