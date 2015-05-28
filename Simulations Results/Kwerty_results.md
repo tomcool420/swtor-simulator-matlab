@@ -19,7 +19,7 @@ Grabbing the rotation straight from Parsely, and then plugging it into the code,
 That means that around 68% of the parses would be between 4524.17 and 4737.83.
 This result would be very difficult to replicate as it is near impossible to have no ability delay. That being said, in the future, when testing rotations, this is probably the best way to compare them.
 As a sanity check: 158 cast on the GCD, factoring in 8.33% alacrity (158*1.5)/(1+0.0833)=218s
-![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_NoDelay_No_Relics_Adrenal.png)
+![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_NoDelay_NoRelics_Adrenal.png)
 ```
 STATS: time - 218.191, damage = 1010543.374, DPS = 4631.456, APM =  51.42, Crit = 0.33
 ===============================================================================================================
@@ -40,7 +40,7 @@ STATS: time - 218.191, damage = 1010543.374, DPS = 4631.456, APM =  51.42, Crit 
 ##Kwerty NO Relic/Adrenal 
 To match Kwerty's parse, we add a small delay of 0.237s before each HiB (lines up with his rotation average).
 Doing that gives us an average of 4480.37 with a standard deviation of 103.47
-![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_HiBDelay_No_Relics_Adrenal.png)
+![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_HiBDelay_NoRelics_Adrenal.png)
 
 ###Best Result
 ```
@@ -99,7 +99,7 @@ STATS: time - 226.871, damage = 1016564.765, DPS = 4480.799, APM =  49.46, Crit 
 
 ## Adding 2 Revanite Relics + 2 power augments 
 Mean is 4784.18 DPS, STD is 112 and the max was 5131 - Unsuprisingly you'd need, ON AVERAGE around 2K parses to have one 3 stdevs above the mean
-![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_HiBDelay_Relics_No_Adrenal.png)
+![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_HiBDelay_Relics_NoAdrenal.png)
 
 ```
 STATS: time - 226.871, damage = 1085283.186, DPS = 4783.695, APM =  49.46, Crit = 0.35
@@ -138,7 +138,7 @@ STATS: time - 226.871, damage = 1164297.662, DPS = 5131.974, APM =  49.46, Crit 
 
 ##No Delay+Relics (still no adrenal)
 We'd have a mean of 4945 DPS with a standard deviation of 114.93 (obviously almost impossible but best way to compare between specs)
-![Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_NoDelay_Relics_No_Adrenal.png)
+![Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Tactics_NoDelay_Relics_NoAdrenal.png)
 ```
 STATS: time - 218.191, damage = 1079393.412, DPS = 4947.005, APM =  51.42, Crit = 0.34
 ===============================================================================================================
