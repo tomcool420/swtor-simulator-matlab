@@ -8,6 +8,7 @@ classdef BaseSimulator < handle
         dots=struct();
         buffs=struct();
         procs=struct();
+        debuffs=struct();
         activations={};
         log={};
         autocrit_charges=0;
@@ -106,6 +107,9 @@ classdef BaseSimulator < handle
            obj.dots=obj.fresh_abilities.dots;
            obj.procs=obj.fresh_abilities.procs;
            obj.buffs=obj.fresh_abilities.buffs;
+           if(isfield(obj.fresh_abilities,'debuffs'))
+               obj.debuffs=obj.fresh_abilities.debuffs;
+           end
         end
         function RefreshSimulator(obj)
            obj.abilities=obj.fresh_abilities.abilities;
@@ -147,9 +151,33 @@ classdef BaseSimulator < handle
             end
             isAv=(CDLeft==0);
         end
-        function [isCast,CDLeft]=ApplyDot(obj,dname,it,offGCD)
+        function [isCast,CDLeft]=ApplyDebuff(obj,dname,it)
+            [isCast,CDLeft]=isAvailable(obj,it);
+                if(~isCast)
+                    return;
+                end
+            t=obj.nextCast;
+            if(it.ctype==1)
+                DOTCheck(obj,t);
+            end
+            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
+            obj.debuffs.(dname).LastApplied=t;
+            obj.debuffs.(dname).Charges=it.Charges;
+            obj.AddToActivations({t,it.name});
+            if(numel(obj.damage)==0)
+                AddDamage(obj,{t,'Dummy Fight Start',0,0,0},0)
+            end
+            if(it.ctype==1)
+                obj.nextCast=t+1.5/(1+obj.stats.Alacrity);
+                DOTCheck(obj,obj.nextCast);
+            end
+        end
+        function [isCast,CDLeft]=ApplyDot(obj,dname,it,offGCD,t)
             if (nargin<4)
                 offGCD = false;
+            end
+            if(nargin<5)
+                t=obj.nextCast;
             end
             if(~offGCD)
                 [isCast,CDLeft]=isAvailable(obj,it);
@@ -157,31 +185,49 @@ classdef BaseSimulator < handle
                     return;
                 end
             end
-            t=obj.nextCast;
+            
             obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
             DOTCheck(obj,t);
-            
+            if(it.ct>0)
+               t=t+it.ct/(1+obj.stats.Alacrity);
+               %fprintf('dot with cast time (%s)\n', it.name)
+            end
             if(~offGCD)
                 obj.AddToActivations({t,it.name});
             end
-            
+            if(isfield(it,'Stacks'))
+               if(obj.dots.(dname).Expire>t || obj.dots.(dname).Expire<0)
+                   %fprintf('Reapplying BS t=%.2f exp=%.2f  ', t,obj.dots.(dname).Expire);
+                  obj.dots.(dname).Stacks=min(it.Stacks,obj.dots.(dname).Stacks+1);
+               else
+                   obj.dots.(dname).Stacks=1;
+               end
+            end
+            dt=obj.dots.(dname);
             if(isfield(it,'initial_tick') && it.initial_tick==0)
-                if(numel(obj.activations)==0)
+                if(numel(obj.damage)==0)
                     if(~isfield(it,'entersCombat') || it.entersCombat~=0)
-                        AddDamage(obj,{0.0,'Dummy Fight Start',0,0,0})
+                        AddDamage(obj,{t,'Dummy Fight Start',0,0,0},0)
                     end
                 end
             else
                 [mhd,mhh,mhc]=CalculateDamage(obj,t,it);
+                if(isfield(dt,'Stacks'))
+                    mhd=mhd*dt.Stacks;
+                end
                 AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
             end
-
+            
             obj.dots.(dname).Ala=obj.stats.Alacrity;
             obj.dots.(dname).LastUsed=t;
             obj.dots.(dname).NextTick=t+it.int/(1+obj.stats.Alacrity);
             obj.dots.(dname).Expire=t+it.dur/(1+obj.stats.Alacrity)*1.001;
             obj.dots.(dname).WExpire=t+(it.dur+5)/(1+obj.stats.Alacrity);
-            if(~offGCD)
+            if(it.ct>0)
+               DOTCheck(obj,t);
+               obj.nextCast=t; 
+            end
+            if(~offGCD && it.ct==0)
                 GCD=1.5/(1+obj.stats.Alacrity);
                 DOTCheck(obj,t+GCD);
                 obj.nextCast=t+GCD;
@@ -296,16 +342,23 @@ classdef BaseSimulator < handle
               tn=obj.dots.(dot).NextTick;
               while(tn>0 && tn<=t) 
                     it=obj.abilities.(obj.dots.(dot).it);
+                    dt=obj.dots.(dot);
                     [mhd,mhh,mhc]=CalculateDamage(obj,tn,it);
-                    AddDamage(obj, {obj.dots.(dot).NextTick,it.name,mhd,mhc,mhh},it);
+                    if(isfield(dt,'Stacks'))
+                       mhd=mhd*dt.Stacks; 
+                    end
+                    AddDamage(obj, {dt.NextTick,it.name,mhd,mhc,mhh},it);
                     DOTCheckCB(obj,t,it,dot);
                     dt=obj.dots.(dot);
-%                     if(strcmp(dot,'FB'))
-%                        fprintf('FB dot: %.2f lu %.1f nt %.1f nte %.1f exp %.1f\n',tn,dt.LastUsed,dt.NextTick,tn+it.int/(1+obj.dots.(dot).Ala)*.999,dt.Expire); 
-%                     end
+%                      if(strcmp(dot,'BS'))
+%                         fprintf('BS dot: %0.2f dmg %.0fst %.2f lu %.1f nt %.1f nte %.1f exp %.1f\n',mhd,dt.Stacks,tn,dt.LastUsed,dt.NextTick,tn+it.int/(1+obj.dots.(dot).Ala)*.999,dt.Expire); 
+%                      end
                     obj.dots.(dot).NextTick=tn+it.int/(1+obj.dots.(dot).Ala);
                     if(obj.dots.(dot).NextTick>obj.dots.(dot).Expire)
                         obj.dots.(dot).NextTick=-1;
+                        if(isfield(dot,'Stacks'))
+                            obj.dots.(dot).Stack=0;
+                        end
                     end
                     tn=obj.dots.(dot).NextTick;
               end
@@ -505,7 +558,7 @@ classdef BaseSimulator < handle
             if(isfield(it,'divider'))
                 divider=it.divider;
             end
-            nm=it.name;
+            %nm=it.name;
             mhc = min(max(rand()<(obj.stats.CritChance+it.cb+bc),autocrit),1);
             CritCallback(obj,t,it,bc,mhc,ohc)
             mhd = (rand()*(mhx-mhm)+mhm)...    %Randomize hit between max and min
@@ -544,9 +597,9 @@ classdef BaseSimulator < handle
                mhd=mhd*(1-dr);
                ohd=ohd*(1-dr);
             end
-            if(strcmp(it.id,'ambush'))
-                itb=it;
-            end
+             if(strcmp(it.id,'incendiary_grenade'))
+                 itb=it;
+             end
        end
 
        function [mhd,ohd] = CalculateBaseDamage(obj,it,crit,raid)

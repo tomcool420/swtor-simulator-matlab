@@ -30,6 +30,7 @@ classdef Sniper < Simulator.BaseSimulator
                obj.activations{end+1}={obj.nextCast,name};
                obj.autocrit_last_proc=obj.nextCast; 
                obj.autocrit_proc_duration=20+obj.stats.pc6*20;
+               %fprintf('woot laze target\n');
            else
                %disp('LT is not up yet');
            end
