@@ -117,8 +117,8 @@ classdef Marksman < Simulator.Sniper
         function [bd, bc,bs,bm]=CalculateBonus(obj,t,it,mhh,ohh)
             bd=0;bc=0;bs=0;bm=1;
             if(strcmp(it.id,'snipe'))
-               bd= 0.05*obj.procs.HS.Charges;
-               bm= 0.05*obj.procs.HS.Charges;
+               bc= 0.05*obj.procs.HS.Charges;
+               bm= 1+0.05*obj.procs.HS.Charges;
             end
         end
 

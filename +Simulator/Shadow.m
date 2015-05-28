@@ -27,7 +27,7 @@ classdef Shadow < Simulator.BaseSimulator
         function [bd, bc, bs,bm]=CalculateBonus(obj,t,it,mhh,ohh)
             bd=0;bc=0;bs=0;bm=1;
             if(obj.buffs.FP.Charges>0 && obj.buffs.FP.LastUsed+obj.buffs.FP.Dur>t )
-                if(strcmp(it.id,'fib')||strcmp(it.id,'vanquish'))
+                if(it.w==0 && (it.ctype==1 || it.ctype==2 || it.ctype==3))
                     bc=0.6;
                     obj.LastFPChargeUsed=t;
                     obj.buffs.FP.Charges=obj.buffs.FP.Charges-1;

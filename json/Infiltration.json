@@ -261,14 +261,15 @@
 		"IT": {
 			"LastProc": -1,
 			"Dur": 15,
-			"CD": 9,
+			"CD": 10,
 			"Available": 0
 		},
 		"CS": {
 			"LastProc": -1,
 			"Dur": 15,
 			"CD": 1.5,
-			"Available": 0
+			"Available": 0,
+			"Charges": 0
 		},
 		"ShT": {
 			"LastProc": -1,

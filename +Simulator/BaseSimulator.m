@@ -542,6 +542,9 @@ classdef BaseSimulator < handle
                mhd=mhd*(1-dr);
                ohd=ohd*(1-dr);
             end
+            if(strcmp(it.id,'ambush'))
+                itb=it;
+            end
        end
 
        function [mhd,ohd] = CalculateBaseDamage(obj,it,crit,raid)
@@ -594,7 +597,11 @@ classdef BaseSimulator < handle
             if(raid)
                 mhd=mhd*(1+it.raidKEFT*.05+it.raidIE*0.07)*(1+.1*it.raidAOE);
             end
-            fprintf('%.1f %.1f %.1f\n',mn,mx,mhd);
+            fprintf('%.1f %.1f %.1f ',mn,mx,mhd);
+            if(it.w==1)
+                fprintf('%.1f %.1f %.1f\n',ohn*0.3,ohx*0.3,ohd);
+            end
+            fprintf('\n');
         end
         function AddToStats(obj,dmg)
             obj.log{end+1}=dmg;

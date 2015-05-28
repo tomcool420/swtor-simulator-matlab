@@ -23,6 +23,9 @@ classdef Infiltration <Simulator.Shadow
             obj.autocrit_abilities = {'Spinning Strike','Shadow Strike'};
             obj.raid_armor_pen=0.2;
             obj.armor_pen=0.1;
+            obj.buffs.BS.Charges=3;
+            obj.procs.CS.Charges=0;
+            obj.procs.CS.LastProc=0;
         end
         
       function [isCast,CDLeft]=UseSaberStrike(obj)
@@ -67,7 +70,9 @@ classdef Infiltration <Simulator.Shadow
               if(obj.autobuff)
                 bm=bm*3;
               else
-                bm=bm*(obj.buffs.BS.Charges);  
+                  bss=obj.buffs.BS.Charges;
+                  bm=bm*bss;
+                  obj.buffs.BS.Charges=0;
               end
           end
           if(strcmp(it.id,'shadow_strike') && (obj.autobuff || (obj.procs.IT.LastProc+obj.procs.IT.Dur>t && obj.procs.IT.LastProc>0)))
@@ -79,6 +84,12 @@ classdef Infiltration <Simulator.Shadow
           %"CallBack" (not) called right before the damage is applied
           %A good time to either proc on hit abilities (force technique)
           %or on hit procs (force synergy)
+          if(~strcmp(it.id,'shadow_technique'))
+              if(obj.procs.IT.LastProc<0 || obj.procs.IT.Available>t)
+                  obj.procs.IT.LastProc=t;
+                  obj.procs.IT.Available=t+obj.procs.IT.Dur/(1+obj.stats.Alacrity);
+              end
+          end
           if(it.w==1)
               %Force Technique
               %fprintf('%s procced force technique',dmg{2})
@@ -87,6 +98,8 @@ classdef Infiltration <Simulator.Shadow
               if((obj.procs.ST.Available<t && r<0.5)|| (BRU && r<0.75))
                   [mhd,mhh,mhc]=obj.CalculateDamage(t,obj.abilities.sht);
                   AddDamage(obj,{t,obj.abilities.sht.name,mhd,mhc,mhh},obj.abilities.sht);
+                  obj.buffs.BS.LastUsed=t;
+                  obj.buffs.BS.Charges=min(3,obj.buffs.BS.Charges+1);
                   if(BRU)
                       tn=t;
                   else
@@ -101,6 +114,10 @@ classdef Infiltration <Simulator.Shadow
               end
               [mhd,mhh,mhc]=obj.CalculateDamage(t,obj.abilities.sht);
               AddDamage(obj,{t,obj.abilities.sht.name,mhd,mhc,mhh},obj.abilities.sht);
+              if(obj.procs.CS.LastProc+obj.procs.CS.Dur>t && rand()<(0.5*obj.procs.CS.LastProc))
+                obj.buffs.BS.LastUsed=t;
+                obj.buffs.BS.Charges=min(3,obj.buffs.BS.Charges+1);
+              end
           end
           if(strcmp(it.id,'clairvoyant_strike'))
               if(obj.stats.pc2 &&(t>=(obj.procs.PC2.Available) ...
@@ -108,6 +125,11 @@ classdef Infiltration <Simulator.Shadow
                   obj.procs.PC2.LastProc=t;
                   obj.procs.PC2.Available=t+obj.procs.PC2.CD/(1+obj.stats.Alacrity)*0.99;
               end
+              if(obj.procs.CS.LastProc+obj.procs.CS.Dur<t);
+                  obj.procs.CS.Charges=0;
+              end
+              obj.procs.CS.Charges=min(2,obj.procs.CS.Charges+1);
+              obj.procs.CS.LastProc=t;
           end
           if(it.w==0 && dmg{5}==1 && dmg{4}==1)
                 %Proc Force Synergy

@@ -14,12 +14,15 @@
 			"ctype": 2,
 			"ct": 1.5,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Charged Burst",
 			"dmg_type": 1,
 			"callback": "SNCallback",
 			"id": "snipe",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"pb": {
 			"c": 0.847,
@@ -35,12 +38,15 @@
 			"ctype": 3,
 			"ct": 2,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Penetrating Rounds",
 			"dmg_type": 1,
 			"ticks": 5,
 			"id": "penblast",
-			"CD": 12
+			"CD": 12,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"td": {
 			"c": 2.51,
@@ -56,11 +62,14 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Quickdraw",
 			"dmg_type": 1,
 			"id": "takedown",
-			"CD": 12
+			"CD": 12,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"ft": {
 			"c": 1.97,
@@ -68,7 +77,7 @@
 			"Sx": 0.192,
 			"Sh": 3185,
 			"Am": 0.28,
-			"w": 0,
+			"w": 1,
 			"mult": 1,
 			"cb": 0.04,
 			"sb": 0.3,
@@ -76,11 +85,14 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Trickshot",
 			"dmg_type": 1,
 			"id": "ft",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"amb": {
 			"c": 3.684,
@@ -96,13 +108,16 @@
 			"ctype": 2,
 			"ct": 2,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Aimed Shot",
 			"dmg_type": 1,
 			"armor_pen": 0.2,
 			"callback": "AMBCallback",
 			"id": "ambush",
-			"CD": 12
+			"CD": 12,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"cd": {
 			"c": 0.3075,
@@ -111,7 +126,7 @@
 			"Sh": 3185,
 			"Am": 0,
 			"w": 0,
-			"mult": 1.2,
+			"mult": 1,
 			"cb": 0,
 			"sb": 0,
 			"s30": 0,
@@ -124,7 +139,10 @@
 			"CD": 0,
 			"base_acc": 1,
 			"raid_mult": 1,
-			"name": "Vital Shot"
+			"name": "Vital Shot",
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"rs": {
 			"c": 0.5,
@@ -140,11 +158,14 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 0.9,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Flurry of Bolts",
 			"dmg_type": 1,
 			"id": "rifleshot",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		}
 	},
 	"dots": {
@@ -207,10 +228,11 @@
 			"CD": 0,
 			"Charges": 0
 		},
-		"FT": {
+		"PC2": {
 			"LastProc": -1,
 			"Dur": 15,
-			"CD": 30
+			"CD": 30,
+			"Available": 0
 		}
 	}
 }
