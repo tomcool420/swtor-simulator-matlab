@@ -14,12 +14,15 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Double Strike",
 			"dmg_type": 2,
 			"id": "doublestrike",
 			"CD": 0,
-			"hits": 2
+			"hits": 2,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"fib": {
 			"c": 1.81,
@@ -36,11 +39,14 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.22,
+			"raid_mult": 1,
 			"name": "Force in Balance",
 			"dmg_type": 3,
 			"id": "fib",
-			"callback": "FIBCallback"
+			"callback": "FIBCallback",
+			"raidAOE": 1,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"sf": {
 			"c": 0.36,
@@ -60,9 +66,12 @@
 			"id": "severforce",
 			"CD": 9,
 			"base_acc": 1,
-			"raid_mult": 1.12,
+			"raid_mult": 1,
 			"name": "Sever Force",
-			"dmg_type": 3
+			"dmg_type": 3,
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"fb": {
 			"c": 0.39,
@@ -82,9 +91,12 @@
 			"id": "forcebreach",
 			"CD": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Force Breach",
-			"dmg_type": 1
+			"dmg_type": 1,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"sps": {
 			"c": 2.657,
@@ -100,11 +112,14 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Spinning Strike",
 			"dmg_type": 2,
 			"id": "spinstrike",
-			"CD": 0
+			"CD": 0,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"sas": {
 			"c": 0.33,
@@ -120,12 +135,15 @@
 			"ctype": 1,
 			"ct": 0,
 			"base_acc": 0.9,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Saber Strike",
 			"dmg_type": 2,
 			"id": "saberstrike",
 			"CD": 0,
-			"hits": 3
+			"hits": 3,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"ses": {
 			"c": 1.86,
@@ -146,7 +164,10 @@
 			"dmg_type": 1,
 			"id": "serenitystrike",
 			"CD": 12,
-			"callback": "SESCallback"
+			"callback": "SESCallback",
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"vq": {
 			"c": 1.295,
@@ -162,12 +183,15 @@
 			"ctype": 2,
 			"ct": 2,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Vanquish",
 			"dmg_type": 2,
 			"id": "vanquish",
 			"CD": 15,
-			"callback": "VQCallback"
+			"callback": "VQCallback",
+			"raidAOE": 0,
+			"raidIE": 1,
+			"raidKEFT": 1
 		},
 		"vqd": {
 			"c": 0.35,
@@ -188,9 +212,12 @@
 			"CD": 0,
 			"initial_tick": 0,
 			"base_acc": 1,
-			"raid_mult": 1.05,
+			"raid_mult": 1,
 			"name": "Vanquish DOT",
-			"dmg_type": 2
+			"dmg_type": 2,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		},
 		"ft": {
 			"c": 0.234,
@@ -211,7 +238,10 @@
 			"base_acc": 1,
 			"raid_mult": 1,
 			"name": "Force Technique",
-			"dmg_type": 1
+			"dmg_type": 1,
+			"raidAOE": 0,
+			"raidIE": 0,
+			"raidKEFT": 1
 		}
 	},
 	"dots": {

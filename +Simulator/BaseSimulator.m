@@ -434,12 +434,18 @@ classdef BaseSimulator < handle
             PrintStats(obj);
             fprintf('%s\n',repmat('=',1,111));
             ks=sort(fieldnames(obj.out_stats_new));
+            arr=zeros(size(ks));
+            for i = 1:numel(ks)
+                k=obj.out_stats_new.(ks{i});
+                arr(i)=k.cd+k.nd;
+            end
+            [~,idx]=sort(arr,'descend');
             fprintf('| Ability%s#        d         n     nd        avg n    c    cd           cc       avg c       %%\n',repmat(' ',1,15));
             fprintf('%s\n',repmat('=',1,111)); 
             for i = 1:max(size(ks))
-               k=obj.out_stats_new.(ks{i});
+               k=obj.out_stats_new.(ks{idx(i)});
                fprintf('| %-20s: %-5i  %10.1f  %-3i  %9.2f %8.2f  %-3i %9.2f %9.2f%%  %8.2f    %5.1f',...
-                       strrep(ks{i},'_',' '),k.hits,k.cd+k.nd,k.hits-k.crits-k.misses,k.nd,k.nd/(k.hits-k.crits-k.misses),...
+                       strrep(ks{idx(i)},'_',' '),k.hits,k.cd+k.nd,k.hits-k.crits-k.misses,k.nd,k.nd/(k.hits-k.crits-k.misses),...
                        k.crits,k.cd,k.crits/k.hits*100,k.cd/k.crits,...
                        (k.cd+k.nd)/obj.total_damage*100);
                fprintf('\n')
