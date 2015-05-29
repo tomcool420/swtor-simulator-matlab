@@ -390,13 +390,14 @@ classdef BaseSimulator < handle
             extra_ap=0.0;
             ar=obj.boss_armor;
             bp= CalculateBonusPen(obj,it,t);
-            ap=obj.armor_pen+obj.raid_armor_pen+bp;
+            ap=obj.armor_pen+bp;
             if(isfield(it,'armor_pen'))
                 extra_ap=it.armor_pen;
             end
             ap=ap+extra_ap;
             if(ap>1);ap=1;end;
-            dr=ar*(1-ap)/(ar*(1-ap)+240*60+800);
+            ar=ar*(1-ap)*(1-obj.raid_armor_pen);
+            dr=ar/(ar+240*60+800);
         end
         function PrintDamage(obj)
             dmg=obj.damage;
@@ -438,7 +439,7 @@ classdef BaseSimulator < handle
             for i = 1:max(size(ks))
                k=obj.out_stats_new.(ks{i});
                fprintf('| %-20s: %-5i  %10.1f  %-3i  %9.2f %8.2f  %-3i %9.2f %9.2f%%  %8.2f    %5.1f',...
-                       ks{i},k.hits,k.cd+k.nd,k.hits-k.crits-k.misses,k.nd,k.nd/(k.hits-k.crits-k.misses),...
+                       strrep(ks{i},'_',' '),k.hits,k.cd+k.nd,k.hits-k.crits-k.misses,k.nd,k.nd/(k.hits-k.crits-k.misses),...
                        k.crits,k.cd,k.crits/k.hits*100,k.cd/k.crits,...
                        (k.cd+k.nd)/obj.total_damage*100);
                fprintf('\n')
@@ -597,7 +598,7 @@ classdef BaseSimulator < handle
                mhd=mhd*(1-dr);
                ohd=ohd*(1-dr);
             end
-             if(strcmp(it.id,'incendiary_grenade'))
+             if(strcmp(it.id,'shockstrike'))
                  itb=it;
              end
        end
