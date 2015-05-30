@@ -9,7 +9,7 @@ if(nargin<4)
     stats=json.loadjson('gear/Iahgazer_norelics.json');
 end
 if(nargin<5)
-    delay=0.7;
+    delay=0.0;
 end
 r=0;
 mx=0;
@@ -42,35 +42,39 @@ end
             elseif(strcmp(rotation{j},'Quick Shot'))
                 a.UseQuickShot();
             elseif(strcmp(txt,'Brutal Shots'))
-                a.UseBrutaShots();
-                a.AddDelay(0.0);
+                a.UseBrutalShots();
+                %a.AddDelay(0.0);
             elseif(strcmp(txt,'Sanguinary Shot'))
                 [isCast,CDLeft]=a.UseSanguinaryShot();
                 a.AddDelay(CDLeft);
                 if(~isCast)
                     a.activations{end+1}={a.nextCast,'Delayed SanguinaryShot'};
-                    isCast=a.UseSanguinaryShot();                     
+                    isCast=a.UseSanguinaryShot();         
+                    %fprintf('delayed SS\n')
                 end
             elseif(strcmp(txt,'Point Blank Shot')||strcmp(txt,'Aimed Shot'))
                 [isCast,CDLeft]=a.UsePointBlankShot();
-                a.AddDelay(delay);
+                idx=idx+1;
+                %a.AddDelay(delay);
                 a.AddDelay(CDLeft);
                 if(~isCast)
                     a.activations{end+1}={a.nextCast,'Delayed PBS'};
-                    isCast=a.UsePointBlankShot();                     
+                    isCast=a.UsePointBlankShot();
+                    %fprintf('delayed PBS');
                 end
             elseif(strcmp(txt,'Vital Shot')||strcmp(txt,'Vital Shot'))
                 a.UseVitalShot();
             elseif(strcmp(txt,'Shrap Bomb')||strcmp(txt,'Vital Shot'))
                 a.UseShrapBomb();
             elseif(strcmp(txt,'Blaster Whip'))
-                idx=idx+1;
+                %idx=idx+1;
                 [isCast,CDLeft]=a.UseBlasterWhip();
                 a.AddDelay(delay);
                 a.AddDelay(CDLeft);
                 if(~isCast)
                     a.activations{end+1}={a.nextCast,'Delayed Bludgeon'};
                     isCast=a.UseBlasterWhip();
+                    %fprintf('delayed BW %.1f\n',CDLeft);
                 end
             elseif(strcmp(txt,'Stealth'))
                 a.stealth=1;

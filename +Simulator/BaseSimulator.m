@@ -542,7 +542,7 @@ classdef BaseSimulator < handle
             if(it.w==1)                              %is a weapon attack
                 rbonus = bd+obj.stats.RangedBonus;
                 mhm= (rbonus*it.c+...                %Main Hand Min
-                    s_.MinMH*obj.weapon_nult*(1+it.Am)+it.Sm*it.Sh)*it.mult;
+                    s_.MinMH*obj.weapon_mult*(1+it.Am)+it.Sm*it.Sh)*it.mult;
                 mhx= (rbonus*it.c+...                %Main Hand Max
                     s_.MaxMH*obj.weapon_mult*(1+it.Am)+it.Sx*it.Sh)*it.mult;
                 ohn= (s_.MinOH*(1+it.Am))*it.mult;   %Off Hand Min
@@ -605,7 +605,7 @@ classdef BaseSimulator < handle
                mhd=mhd*(1-dr);
                ohd=ohd*(1-dr);
             end
-             if(strcmp(it.id,'pulsecannon'))
+             if(strcmp(it.id,'blaster_whip'))
                  itb=it;
              end
        end
@@ -623,9 +623,9 @@ classdef BaseSimulator < handle
             if(it.w==1)
                rbonus = bonusdmg+obj.stats.RangedBonus;
                mhm= (rbonus*it.c+...
-                  s_.MinMH*(1+it.Am)+it.Sm*it.Sh)*it.mult;
+                  s_.MinMH*obj.weapon_mult*(1+it.Am)+it.Sm*it.Sh)*it.mult;
                mhx= (rbonus*it.c+...
-                  s_.MaxMH*(1+it.Am)+it.Sx*it.Sh)*it.mult;
+                  s_.MaxMH*obj.weapon_mult*(1+it.Am)+it.Sx*it.Sh)*it.mult;
                ohn= (s_.MinOH*(1+it.Am))*it.mult;
                ohx= (s_.MaxOH*(1+it.Am))*it.mult;
                
