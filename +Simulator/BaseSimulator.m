@@ -40,6 +40,7 @@ classdef BaseSimulator < handle
         cooldown_enabled = 1;
         continue_past_hp=0;
         disable_ability_cds=0;
+        weapon_mult=0;
     end
     
     methods
@@ -604,7 +605,7 @@ classdef BaseSimulator < handle
                mhd=mhd*(1-dr);
                ohd=ohd*(1-dr);
             end
-             if(strcmp(it.id,'shockstrike'))
+             if(strcmp(it.id,'pulsecannon'))
                  itb=it;
              end
        end
