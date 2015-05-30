@@ -1,7 +1,7 @@
 #Tactis Rotation Simulation
 Using the parse and gear provided by Kwerty, The following attempts were made at 1) reproducing the results and 2) predicting future results
 Each combination was run 2500 times to provide nice statistics. For each of the tables, 
-
+```
 #     number of hits for an ability
 d     total damage
 n     non crit hits
@@ -12,7 +12,7 @@ cd    total critical damage
 cc    crit percentage
 avg c average crit
 %     percentage of total damage
-
+```
 Since tactics does NOT have a sub 30% boost, letting the parse run past the end of the dummy HP is fine.
 ##Kwerty NO Relic/Adrenal APM Free - Mean Result
 Grabbing the rotation straight from Parsely, and then plugging it into the code, we obtain a mean of 4631.83 DPS with a standard deviation of 106.83. 
