@@ -69,7 +69,7 @@ STATS: time - 224.891, damage = 1008014.379, DPS = 4483.8, APM =  41.62, Crit = 
 
 ## Adding 2 Revanite Relics + 2 power augments 
 Mean is 4865 DPS, STD is 74.97 
-![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Plasmatech_HiBDelay_Relics_NoAdrenal.png)
+![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Plasmatech_Delay_Relics_NoAdrenal.png)
 
 ```
 STATS: time - 224.891, damage = 1094589.055, DPS = 4867.192, APM =  41.62, Crit = 0.37
