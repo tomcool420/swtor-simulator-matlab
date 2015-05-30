@@ -1,0 +1,21 @@
+{
+	"TechBonus": 1940.148,
+	"RangedBonus": 1216.047,
+	"CritChance": 0.2736,
+	"Surge": 0.6719,
+	"Alacrity_old": 0.0833,
+    "Alacrity": 0.0833,
+	"MinMH": 739,
+	"MaxMH": 1109,
+	"MinOH": 0,
+	"MaxOH": 0,
+	"Accuracy": 0.1,
+	"FR_proc": 0,
+	"SA_proc": 0,
+	"adrenal_amt": 750,
+	"pc2": 1,
+	"pc4": 1,
+	"pc6": 1,
+	"old2pc": 0,
+	"old4pc": 0
+}

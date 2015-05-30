@@ -11,10 +11,10 @@ times=zeros(1,loops);
 dmg=zeros(1,loops);
 strl=0;
 data=json.loadjson('json/Plasmatech.json');
-stats=json.loadjson('gear/Kwerty_NoRelics.json');
+stats=json.loadjson('gear/Kwerty_noRelics.json');
 %stats=json.loadjson('json/VGTest.json');
     for i = 1:loops
-        %strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
+        strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
         %a=DFRotationClass();
 
         a=Simulator.Plasmatech(data);
@@ -22,7 +22,7 @@ stats=json.loadjson('gear/Kwerty_NoRelics.json');
         a.PreloadMissiles;
         a.raid_armor_pen=0.2;
         a.stats=stats;
-        a.total_HP=1000000;
+        a.total_HP=1.0997e+06;
         a.continue_past_hp=1;
         %a.UseLazeTarget();
         for j = 1:numel(rotation)
@@ -52,6 +52,7 @@ stats=json.loadjson('gear/Kwerty_NoRelics.json');
             elseif(strcmp(rotation{j},'Shockstrike'))
                 [isCast,CDLeft]=a.UseShockStrike();
                 if(~isCast)
+                    fprintf('delayed AP\n');
                     a.activations{end+1}={a.nextCast,'Delayed SS'};
                     a.AddDelay(CDLeft);
                     a.UseShockStrike();

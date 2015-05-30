@@ -79,7 +79,7 @@ classdef Plasmatech <Simulator.Vanguard
                bm=1.05*bm;      %Rain of Fire
             end
             if(it.dmg_type == 3) %elemental
-                bc=bc+0.05;     %Cell Bonus;
+                bc=bc+0.03;     %Cell Bonus;
             end
             if(strcmp(it.id,'hib') && obj.procs.HAC.Charges>0 && obj.procs.HAC.Dur+obj.procs.HAC.LastProc>t)
                 bc=bc+1;
