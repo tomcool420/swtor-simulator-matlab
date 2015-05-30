@@ -40,7 +40,7 @@ classdef BaseSimulator < handle
         cooldown_enabled = 1;
         continue_past_hp=0;
         disable_ability_cds=0;
-        weapon_mult=0;
+        weapon_mult=1;
     end
     
     methods
@@ -542,9 +542,9 @@ classdef BaseSimulator < handle
             if(it.w==1)                              %is a weapon attack
                 rbonus = bd+obj.stats.RangedBonus;
                 mhm= (rbonus*it.c+...                %Main Hand Min
-                    s_.MinMH*(1+it.Am)+it.Sm*it.Sh)*it.mult;
+                    s_.MinMH*obj.weapon_nult*(1+it.Am)+it.Sm*it.Sh)*it.mult;
                 mhx= (rbonus*it.c+...                %Main Hand Max
-                    s_.MaxMH*(1+it.Am)+it.Sx*it.Sh)*it.mult;
+                    s_.MaxMH*obj.weapon_mult*(1+it.Am)+it.Sx*it.Sh)*it.mult;
                 ohn= (s_.MinOH*(1+it.Am))*it.mult;   %Off Hand Min
                 ohx= (s_.MaxOH*(1+it.Am))*it.mult;   %Off Hand Min
                 
