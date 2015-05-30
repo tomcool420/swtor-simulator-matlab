@@ -1,4 +1,4 @@
-#Tactis Rotation Simulation
+#Tactics Rotation Simulation
 Using the parse and gear provided by Kwerty, The following attempts were made at 1) reproducing the results and 2) predicting future results
 Each combination was run 2500 times to provide nice statistics. For each of the tables, 
 ```
