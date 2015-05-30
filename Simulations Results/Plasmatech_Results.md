@@ -19,6 +19,7 @@ Grabbing the rotation straight from Parsely, and then plugging it into the code,
 That means that around 68% of the parses would be between 4545.7 and 4697.1.
 This result would be very difficult to replicate as it is near impossible to have no ability delay. That being said, in the future, when testing rotations, this is probably the best way to compare them.
 As a sanity check: 125 cast on the GCD +48s of Pulse Cannon, factoring in 8.33% alacrity (125*1.5 + 16*3)/(1+0.0833)=217.3913s
+
 ![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Plasmatech_NoDelay_NoRelics_Adrenal.png)
 ```
 STATS: time - 217.391, damage = 1001432.902, DPS = 4606.591, APM =  43.06, Crit = 0.35
@@ -42,6 +43,7 @@ STATS: time - 217.391, damage = 1001432.902, DPS = 4606.591, APM =  43.06, Crit 
 
 ##Kwerty NO Relic/Adrenal 
 Doing that gives us an average of 4480.37 with a standard deviation of 75.3714
+
 ![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Plasmatech_Delay_NoRelics_Adrenal.png)
 
 
@@ -69,6 +71,7 @@ STATS: time - 224.891, damage = 1008014.379, DPS = 4483.8, APM =  41.62, Crit = 
 
 ## Adding 2 Revanite Relics + 2 power augments 
 Mean is 4865 DPS, STD is 74.97 
+
 ![No Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Plasmatech_Delay_Relics_NoAdrenal.png)
 
 ```
@@ -111,6 +114,7 @@ STATS: time - 226.871, damage = 1164297.662, DPS = 5131.974, APM =  49.46, Crit 
 
 ##No Delay+Relics (still no adrenal)
 We'd have a mean of 5002.9 DPS with a standard deviation of 80.93 (obviously almost impossible but best way to compare between specs)
+
 ![Relic, No adrenal](https://raw.githubusercontent.com/tomcool420/swtor-simulator-matlab/master/Simulations%20Results/Plasmatech_NoDelay_Relics_NoAdrenal.png)
 ```
 STATS: time - 217.391, damage = 1083181.992, DPS = 4982.637, APM =  43.06, Crit = 0.38
