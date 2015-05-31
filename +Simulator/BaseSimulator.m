@@ -76,6 +76,9 @@ classdef BaseSimulator < handle
         function [bd, bc,bs,bm,badd]=CalculateBonus(obj,t,it,mhh,ohh)
             bd=0;bc=0;bs=0;bm=1;badd=0;
         end
+        function ala = GetAla(obj,t)
+           ala= obj.stats.Alacrity; 
+        end
         function CritCallback(obj,t,it,bc,mhc,ohc)
             %Function that gets called in case something special needs to
             %be done after a crit (quickly)
@@ -128,7 +131,7 @@ classdef BaseSimulator < handle
         end
         function UseAdrenal(obj)
             obj.buffs.AD.LastUsed=obj.nextCast;
-            obj.buffs.AD.Available=obj.nextCast+180/(1+obj.stats.Alacrity);
+            obj.buffs.AD.Available=obj.nextCast+180/(1+obj.GetAla(obj.nextCast));
         end
         function r = isAutocrit(obj,it)
             r=0;
@@ -161,7 +164,7 @@ classdef BaseSimulator < handle
             if(it.ctype==1)
                 DOTCheck(obj,t);
             end
-            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
+            obj.avail.(it.id)=t+it.CD/(1+obj.GetAla(t));
             obj.debuffs.(dname).LastApplied=t;
             obj.debuffs.(dname).Charges=it.Charges;
             obj.AddToActivations({t,it.name});
@@ -169,7 +172,7 @@ classdef BaseSimulator < handle
                 AddDamage(obj,{t,'Dummy Fight Start',0,0,0},0)
             end
             if(it.ctype==1)
-                obj.nextCast=t+1.5/(1+obj.stats.Alacrity);
+                obj.nextCast=t+1.5/(1+obj.GetAla(t));
                 DOTCheck(obj,obj.nextCast);
             end
         end
@@ -187,10 +190,10 @@ classdef BaseSimulator < handle
                 end
             end
             
-            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
+            obj.avail.(it.id)=t+it.CD/(1+obj.GetAla(t));
             DOTCheck(obj,t);
             if(it.ct>0)
-               t=t+it.ct/(1+obj.stats.Alacrity);
+               t=t+it.ct/(1+obj.GetAla(t));
                %fprintf('dot with cast time (%s)\n', it.name)
             end
             if(~offGCD)
@@ -218,18 +221,18 @@ classdef BaseSimulator < handle
                 end
                 AddDamage(obj,{t,it.name,mhd,mhc,mhh},it);
             end
-            
-            obj.dots.(dname).Ala=obj.stats.Alacrity;
+            ala=obj.GetAla(t);
+            obj.dots.(dname).Ala=ala;
             obj.dots.(dname).LastUsed=t;
-            obj.dots.(dname).NextTick=t+it.int/(1+obj.stats.Alacrity);
-            obj.dots.(dname).Expire=t+it.dur/(1+obj.stats.Alacrity)*1.001;
-            obj.dots.(dname).WExpire=t+(it.dur+5)/(1+obj.stats.Alacrity);
+            obj.dots.(dname).NextTick=t+it.int/(1+ala);
+            obj.dots.(dname).Expire=t+it.dur/(1+ala)*1.001;
+            obj.dots.(dname).WExpire=t+(it.dur+5)/(1+ala);
             if(it.ct>0)
                DOTCheck(obj,t);
                obj.nextCast=t; 
             end
             if(~offGCD && it.ct==0)
-                GCD=1.5/(1+obj.stats.Alacrity);
+                GCD=1.5/(1+ala);
                 DOTCheck(obj,t+GCD);
                 obj.nextCast=t+GCD;
             end
@@ -240,7 +243,8 @@ classdef BaseSimulator < handle
                 return;
             end
             t=obj.nextCast;
-            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
+            ala=obj.GetAla(t);
+            obj.avail.(it.id)=t+it.CD/(1+ala);
             
             if(it.ctype~=0)
                 obj.AddToActivations({t,it.name});
@@ -270,7 +274,7 @@ classdef BaseSimulator < handle
                 end
             end
             if(it.ctype>0)
-                t=obj.nextCast+1.5/(1+obj.stats.Alacrity);
+                t=obj.nextCast+1.5/(1+ala);
                 DOTCheck(obj,t);
                 obj.nextCast=t;
             end
@@ -287,9 +291,11 @@ classdef BaseSimulator < handle
                 ct_red=0;
             end
             obj.AddToActivations({obj.nextCast,it.name});
-            obj.nextCast=obj.nextCast+(it.ct-ct_red)/(1+obj.stats.Alacrity);
-            obj.avail.(it.id)=obj.nextCast+it.CD/(1+obj.stats.Alacrity);
             t=obj.nextCast;
+            ala=obj.GetAla(t);
+            obj.nextCast=t+(it.ct-ct_red)/(1+ala);
+            obj.avail.(it.id)=t+it.CD/(1+ala);
+            
             DOTCheck(obj,t);
             ac=isAutocrit(obj,it);
             if(isfield(it,'callback'))
@@ -312,9 +318,11 @@ classdef BaseSimulator < handle
             end
             obj.AddToActivations({obj.nextCast,it.name});
             ac=isAutocrit(obj,it);
-            castTime=it.ct/(1+obj.stats.Alacrity);
             t=obj.nextCast;
-            obj.avail.(it.id)=t+it.CD/(1+obj.stats.Alacrity);
+            ala=obj.GetAla(t);
+            castTime=it.ct/(1+ala);
+            
+            obj.avail.(it.id)=t+it.CD/(1+ala);
             for i = 1:it.ticks
                 DOTCheck(obj,t);
                 [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,t,it,ac);
