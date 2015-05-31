@@ -143,6 +143,9 @@ classdef Virulence < Simulator.Sniper
         function [isCast,CDLeft]=UseXSFreighterFlyby(obj)
            [isCast,CDLeft]=ApplyDot(obj,'XS',obj.abilities.xs);
         end
+        function [isCast,CDLeft]=UseHightailIt(obj)
+            [isCast,CDLeft]= ApplyDot(obj,'CM',obj.abilities.cm);
+        end
         
 
     end
