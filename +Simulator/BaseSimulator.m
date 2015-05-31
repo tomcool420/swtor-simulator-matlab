@@ -649,6 +649,8 @@ classdef BaseSimulator < handle
             if(it.ctype==3)
                 mn=mn*it.ticks;
                 mx=mx*it.ticks;
+                ohx=ohx*it.ticks;
+                ohn=ohn*it.ticks;
             elseif(it.ctype==4)
                 s=1;
                 if(isfield(it,'initial_tick')&&it.initial_tick==0)

@@ -56,10 +56,10 @@ classdef Virulence < Simulator.Sniper
             %"CallBack" (not) called right before the damage is applied
             %A good time to either proc on hit abilities (force technique) 
             %or on hit procs (force synergy)
-            if(it.dmg_type==3 )
+            nm=it.id;
+            if(it.dmg_type==4 || (strcmp(it.id,'cull')&&dmg{3}>600) )
                 if(obj.buffs.WB.LastUsed+obj.buffs.WB.Dur>dmg{1}...
-                        && obj.buffs.WB.LastUsed>0 ...
-                        && ~strcmp(it.id,'corr_mine'))
+                        && obj.buffs.WB.LastUsed>0)
                     [mhd,mhh,mhc,ohd,ohh,ohc]=CalculateDamage(obj,dmg{1},obj.abilities.wb);
                     AddDamage(obj,{dmg{1},obj.abilities.wb.name,mhd,mhc,mhh},obj.abilities.wb);
                     if(ohd>=0)
@@ -139,6 +139,9 @@ classdef Virulence < Simulator.Sniper
         end
         function [isCast,CDLeft]=UseSpeedShot(obj)
             [isCast,CDLeft]=obj.UseSeriesOfShots();
+        end
+        function [isCast,CDLeft]=UseXSFreighterFlyby(obj)
+           [isCast,CDLeft]=ApplyDot(obj,'XS',obj.abilities.xs);
         end
         
 
