@@ -17,7 +17,7 @@ times=zeros(1,loops);
 dmg=zeros(1,loops);
 strl=0;
 data=json.loadjson('json/Serenity.json');
-stats=json.loadjson('gear/MulletShadow.json');
+stats=json.loadjson('gear/MulletShadow204.json');
 %stats=json.loadjson('json/ShTest.json');
     for i =1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
@@ -27,8 +27,8 @@ stats=json.loadjson('gear/MulletShadow.json');
         a.buffs.FP.Charges=3;
         a.raid_armor_pen=0.2;
         a.stats=stats;
-        a.continue_past_hp=0;
-        %a.total_HP=1080000;
+        a.continue_past_hp=1;
+        a.total_HP=1062100;
         for j = 1:numel(rotation)
             txt=rotation{j};
             if(strcmp(rotation{j},'Saber Strike')||strcmp(txt,'Flurry of Bolts'))
@@ -58,7 +58,7 @@ stats=json.loadjson('gear/MulletShadow.json');
                 a.UseBattleReadiness();
             else
                 a.extra_abilities=a.extra_abilities+1;
-                disp(['unknown ' txt]);
+                %disp(['unknown ' txt]);
             end
             
         end

@@ -1,4 +1,4 @@
-function [r,dps,apm,times,mx,mn]=MMRotations(rotation,loops,pub,stats,delay)
+function [r,dps,apm,times,mx,mn]=MMRotation(rotation,loops,pub,stats,delay)
 if(nargin<2)
     loops=1;
 end
@@ -6,7 +6,7 @@ if(nargin<3)
    pub=1; 
 end
 if(nargin<4)
-    stats=json.loadjson('gear/Tosh.json');
+    stats=json.loadjson('gear/Luna6pc.json');
 end
 if(nargin<5)
     delay=0.15;
@@ -46,7 +46,7 @@ end
             elseif(strcmp(txt,'Penetrating Blasts')||strcmp(txt,'Penetrating Rounds'))
                 [isCast,CDLeft]=a.UsePenetratingBlasts();
                 if(~isCast)
-                    fprintf('delaying PB %.1f\n',CDLeft)
+                    %fprintf('delaying PB %.1f\n',CDLeft)
                      a.activations{end+1}={a.nextCast,'Delayed PB'};
                     a.AddDelay(CDLeft);
                     [isCast,CDLeft]=a.UsePenetratingBlasts();
