@@ -41,6 +41,7 @@ classdef BaseSimulator < handle
         continue_past_hp=0;
         disable_ability_cds=0;
         weapon_mult=1;
+        detailed_stats=1;
     end
     
     methods
@@ -548,7 +549,7 @@ classdef BaseSimulator < handle
 
             
             if(it.w==1)                              %is a weapon attack
-                rbonus = bd+obj.stats.RangedBonus;
+                rbonus = bd+obj.stats.WeaponBonus;
                 mhm= (rbonus*it.c+...                %Main Hand Min
                     s_.MinMH*obj.weapon_mult*(1+it.Am)+it.Sm*it.Sh)*it.mult;
                 mhx= (rbonus*it.c+...                %Main Hand Max
@@ -556,16 +557,20 @@ classdef BaseSimulator < handle
                 ohn= (s_.MinOH*(1+it.Am))*it.mult;   %Off Hand Min
                 ohx= (s_.MaxOH*(1+it.Am))*it.mult;   %Off Hand Min
                 
-                ohc = max(autocrit,rand()<(obj.stats.CritChance+bc+it.cb));
+                ohc = max(autocrit,rand()<(obj.stats.WeaponCrit+bc+it.cb));
                 ohh = rand()<(it.base_acc-obj.boss_def+obj.stats.Accuracy-0.3+bacc);
                 ohd = (rand()*(ohx-ohn)+ohn)*(1+(s_.Surge+bs+it.sb)*ohc)*ohh*bm*0.3;
                 if(ohn==0 || ohx==0)
                     ohd=-1;
                 end
+                
+                mhc = min(max(rand()<(obj.stats.WeaponCrit+it.cb+bc),autocrit),1);
+                
             else                                     %Force/Tech Attack
-                tbonus = bd+obj.stats.TechBonus;
+                tbonus = bd+obj.stats.SecondBonus;
                 mhm=(tbonus*it.c+it.Sm*it.Sh)*it.mult;
                 mhx=(tbonus*it.c+it.Sx*it.Sh)*it.mult;
+                mhc = min(max(rand()<(obj.stats.SecondCrit+it.cb+bc),autocrit),1);
                 ohc=0; ohh=0; ohd=-1;
             end
             
@@ -575,7 +580,7 @@ classdef BaseSimulator < handle
                 divider=it.divider;
             end
             %nm=it.name;
-            mhc = min(max(rand()<(obj.stats.CritChance+it.cb+bc),autocrit),1);
+            
             CritCallback(obj,t,it,bc,mhc,ohc)
             mhd = (rand()*(mhx-mhm)+mhm)...    %Randomize hit between max and min
                   *(1+(s_.Surge+it.sb)*mhc)... %Apply Crit Multiplier
@@ -677,6 +682,9 @@ classdef BaseSimulator < handle
             fprintf('\n');
         end
         function AddToStats(obj,dmg)
+            if(~obj.detailed_stats)
+                return;
+            end
             obj.log{end+1}=dmg;
             str_save=strrep(dmg{2},' ','_');
           if(isfield(obj.out_stats_new,str_save))
