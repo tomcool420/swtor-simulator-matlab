@@ -19,7 +19,7 @@ if(w>mx)
     mstat='willpower';
     mx=w;
 end
-fprintf('Main Stat is %s\n',mstat);
+%fprintf('Main Stat is %s\n',mstat);
 if(~isfield(base_stats,'force_power'))
     base_stats.force_power=0;
 end
@@ -92,7 +92,7 @@ elseif(strcmpi(mstat,'willpower'))
 end
 
 alacrity = bs.alacrity_buffs+ 30*(1-(1-(0.01/0.3))^((bs.alacrity_rating/60)/1.25))/100;
-surge = bs.surge_buffs+30*(1 - ( 1 - ( 0.01 / 0.3 ) )^( ( bs.surge_rating/ 60) / 0.22 ) )/100;
+surge = 0.5+bs.surge_buffs+30*(1 - ( 1 - ( 0.01 / 0.3 ) )^( ( bs.surge_rating/ 60) / 0.22 ) )/100;
 
 stats= base_stats;
 stats.Alacrity = alacrity;

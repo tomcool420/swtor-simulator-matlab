@@ -64,11 +64,12 @@ classdef BaseSimulator < handle
             %only use for cooldowns (illegal mods or target acquired
             bonuspen=0;
         end
-        function AddDamageCB(obj,t,dmg,it)
+        function AddDamageCB(~,~,~,~)
+            %AddDamageCB(obj,t,dmg,it)
             %"CallBack" (not) called right before the damage is applied
             %A good time to either proc on hit abilities (force technique) 
             %or on hit procs (force synergy)
-            obj;t;it;dmg;
+            %obj;t;it;dmg;
         end
         function bacc=CalculateBonusAccuracy(obj,t,it) 
             %Check if you have an accuracy debuff up;
@@ -634,7 +635,7 @@ classdef BaseSimulator < handle
             bonusmult=0;
             s_=obj.stats;
             if(it.w==1)
-               rbonus = bonusdmg+obj.stats.RangedBonus;
+               rbonus = bonusdmg+obj.stats.WeaponBonus;
                mhm= (rbonus*it.c+...
                   s_.MinMH*obj.weapon_mult*(1+it.Am)+it.Sm*it.Sh)*it.mult;
                mhx= (rbonus*it.c+...
@@ -649,7 +650,7 @@ classdef BaseSimulator < handle
                end
                %fprintf('%f %f %f\n',mhm,mhx,rbonus);
             else
-                tbonus = bonusdmg+obj.stats.TechBonus;
+                tbonus = bonusdmg+obj.stats.SecondBonus;
                 mhm=(tbonus*it.c+it.Sm*it.Sh)*it.mult;
                 mhx=(tbonus*it.c+it.Sx*it.Sh)*it.mult;
                 ohd=-1;
