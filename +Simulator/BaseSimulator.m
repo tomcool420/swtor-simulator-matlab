@@ -42,6 +42,7 @@ classdef BaseSimulator < handle
         disable_ability_cds=0;
         weapon_mult=1;
         detailed_stats=1;
+        use_mean=0;
     end
     
     methods
@@ -534,21 +535,24 @@ classdef BaseSimulator < handle
 
             
             %is Focused Retribution Procced
-            if(obj.procs.FR.LastProc>=0 && obj.procs.FR.LastProc+6>t)
-                bd = bd + obj.stats.FR_proc*0.2*1.05*1.05;
+            if(~obj.use_mean)
+                if(obj.procs.FR.LastProc>=0 && obj.procs.FR.LastProc+6>t)
+                    bd = bd + obj.stats.FR_proc*0.2*1.05*1.05;
+                end
+                
+                %is Serendipidous Procced
+                if(obj.procs.SA.LastProc>=0 && obj.procs.SA.LastProc+6>t)
+                    bd = bd + obj.stats.SA_proc*0.23*1.05;
+                end
+                
+
+            else
+                bd=bd+(obj.stats.SA_proc*0.23*1.05+obj.stats.FR_proc*0.2*1.05*1.05)*6/20;
             end
-            
-            %is Serendipidous Procced
-            if(obj.procs.SA.LastProc>=0 && obj.procs.SA.LastProc+6>t)
-                bd = bd + obj.stats.SA_proc*0.23*1.05;
-            end
-            
-            %is Adrenal Used
+                            %is Adrenal Used
             if(obj.buffs.AD.LastUsed>=0 && obj.buffs.AD.LastUsed+15>t)
                 bd = bd + obj.stats.adrenal_amt*0.23*1.05;
             end
-
-            
             if(it.w==1)                              %is a weapon attack
                 rbonus = bd+obj.stats.WeaponBonus;
                 mhm= (rbonus*it.c+...                %Main Hand Min
@@ -558,20 +562,35 @@ classdef BaseSimulator < handle
                 ohn= (s_.MinOH*(1+it.Am))*it.mult;   %Off Hand Min
                 ohx= (s_.MaxOH*(1+it.Am))*it.mult;   %Off Hand Min
                 
-                ohc = max(autocrit,rand()<(obj.stats.WeaponCrit+bc+it.cb));
+                
                 ohh = rand()<(it.base_acc-obj.boss_def+obj.stats.Accuracy-0.3+bacc);
-                ohd = (rand()*(ohx-ohn)+ohn)*(1+(s_.Surge+bs+it.sb)*ohc)*ohh*bm*0.3;
+                
+                
+                
+                if(obj.use_mean)
+                    ohc = min(max(autocrit,(obj.stats.WeaponCrit+bc+it.cb)),1);
+                    mhc = min(max((obj.stats.WeaponCrit+it.cb+bc),autocrit),1);
+                    ohd = (0.5*(ohx-ohn)+ohn)*(1+(s_.Surge+bs+it.sb)*ohc)*ohh*bm*0.3;
+                    ohh = min((it.base_acc-obj.boss_def+obj.stats.Accuracy-0.3+bacc),1);
+                else
+                    ohc = min(max(autocrit,rand()<(obj.stats.WeaponCrit+bc+it.cb)),1);
+                    mhc = min(max(rand()<(obj.stats.WeaponCrit+it.cb+bc),autocrit),1);
+                    ohd = (rand()*(ohx-ohn)+ohn)*(1+(s_.Surge+bs+it.sb)*ohc)*ohh*bm*0.3;
+                    ohh = rand()<(it.base_acc-obj.boss_def+obj.stats.Accuracy-0.3+bacc);
+                end
                 if(ohn==0 || ohx==0)
                     ohd=-1;
                 end
-                
-                mhc = min(max(rand()<(obj.stats.WeaponCrit+it.cb+bc),autocrit),1);
                 
             else                                     %Force/Tech Attack
                 tbonus = bd+obj.stats.SecondBonus;
                 mhm=(tbonus*it.c+it.Sm*it.Sh)*it.mult;
                 mhx=(tbonus*it.c+it.Sx*it.Sh)*it.mult;
-                mhc = min(max(rand()<(obj.stats.SecondCrit+it.cb+bc),autocrit),1);
+                if(obj.use_mean)
+                    mhc= min(max((obj.stats.SecondCrit+it.cb+bc),autocrit),1);
+                else
+                    mhc = min(max(rand()<(obj.stats.SecondCrit+it.cb+bc),autocrit),1);
+                end
                 ohc=0; ohh=0; ohd=-1;
             end
             
@@ -583,11 +602,19 @@ classdef BaseSimulator < handle
             %nm=it.name;
             
             CritCallback(obj,t,it,bc,mhc,ohc)
+            if(obj.use_mean)
+                mhd = (0.5*(mhx-mhm)+mhm)...    %Randomize hit between max and min
+                  *(1+(s_.Surge+it.sb)*mhc)... %Apply Crit Multiplier
+                  *mhh...                      %Is it a hit?
+                  *bm...                       %Apply the multiplier
+                  /divider;
+            else
             mhd = (rand()*(mhx-mhm)+mhm)...    %Randomize hit between max and min
                   *(1+(s_.Surge+it.sb)*mhc)... %Apply Crit Multiplier
                   *mhh...                      %Is it a hit?
                   *bm...                       %Apply the multiplier
                   /divider;
+            end
             
 
             %2PC set bonus

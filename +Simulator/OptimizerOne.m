@@ -13,17 +13,18 @@ inc = opts.var_inc;
 var = opts.var;
 dep = opts.dependent;
 
-for i=iarr
+parfor i=iarr
    val = i*inc;
    cp=base_stats;
    cp.(var)=cp.(var)+val;
    cp.(dep)=cp.(dep)-val;
    fprintf('Calculating for (%s:%.0f and %s:%0.f)\n',var,cp.(var),dep,cp.(dep));
    stats=Simulator.StatCalculator(cp);
-   [~,dps]=rotation_func(rotation,2000,1,stats);
+   [~,~,dmg]=rotation_func(rotation,100,1,stats);
+   [~,dps]=rotation_func(rotation,1000,1,stats,mean(dmg));
    mx(i)=max(dps);
    me(i)=mean(dps);
-   v2(i)=i;
+   v2(i)=cp.(var);
 end
     
 
