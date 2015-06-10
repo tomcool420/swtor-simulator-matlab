@@ -365,8 +365,8 @@ classdef BaseSimulator < handle
 %                      if(strcmp(dot,'BS'))
 %                         fprintf('BS dot: %0.2f dmg %.0fst %.2f lu %.1f nt %.1f nte %.1f exp %.1f\n',mhd,dt.Stacks,tn,dt.LastUsed,dt.NextTick,tn+it.int/(1+obj.dots.(dot).Ala)*.999,dt.Expire); 
 %                      end
-                    obj.dots.(dot).NextTick=tn+it.int/(1+obj.dots.(dot).Ala);
-                    if(obj.dots.(dot).NextTick>obj.dots.(dot).Expire)
+                    obj.dots.(dot).NextTick=tn+it.int/(1+obj.dots.(dot).Ala)*0.99;
+                    if(obj.dots.(dot).NextTick>obj.dots.(dot).Expire+0.05)
                         obj.dots.(dot).NextTick=-1;
                         if(isfield(dot,'Stacks'))
                             obj.dots.(dot).Stack=0;
