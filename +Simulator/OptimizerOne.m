@@ -12,7 +12,7 @@ j=1;
 inc = opts.var_inc;
 var = opts.var;
 dep = opts.dependent;
-
+fHandle = rotation_func;
 parfor i=iarr
    val = i*inc;
    cp=base_stats;
@@ -20,8 +20,8 @@ parfor i=iarr
    cp.(dep)=cp.(dep)-val;
    fprintf('Calculating for (%s:%.0f and %s:%0.f)\n',var,cp.(var),dep,cp.(dep));
    stats=Simulator.StatCalculator(cp);
-   [~,~,dmg]=rotation_func(rotation,100,1,stats);
-   [~,dps]=rotation_func(rotation,1000,1,stats,mean(dmg));
+   %[~,~,dmg]=fHandle(rotation,100,1,stats);
+   [~,dps]=fHandle(rotation,1500,1,stats);
    mx(i)=max(dps);
    me(i)=mean(dps);
    v2(i)=cp.(var);

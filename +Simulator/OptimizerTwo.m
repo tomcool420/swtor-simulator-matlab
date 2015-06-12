@@ -33,7 +33,8 @@ for i=iarr1
         cp.(dep2)=cp.(dep2)-val2;
         %fprintf('Calculating for (%s:%.0f and %s:%0.f)\n',var1,cp.(var1),dep,cp.(dep));
         stats=Simulator.StatCalculator(cp);
-        [~,dps]=rotation_func(rotation,100,1,stats);
+        [~,~,dmg]=rotation_func(rotation,100,1,stats);
+        [~,dps]=rotation_func(rotation,1500,1,stats,mean(dmg));
         mx(i,j)=max(dps);
         me(i,j)=mean(dps);
         vx(i,j)=cp.(var1);
