@@ -63,7 +63,16 @@ classdef Infiltration <Simulator.Shadow
        end
       function [bd, bc,bs,bm]=CalculateBonus(obj,t,it,mhh,ohh)
           [bd, bc,bs,bm]=CalculateBonus@Simulator.Shadow(obj,t,it,mhh,ohh);
-          if(it.w==1 && obj.procs.FS.LastProc+obj.procs.FS.Dur>t)  %Force Synergy Bonus Dmg
+          bd=0;bc=0;bs=0;bm=1;
+            if(obj.buffs.FP.Charges>0 && obj.buffs.FP.LastUsed+obj.buffs.FP.Dur>t )
+                if(it.w==0 && (it.ctype==1 || it.ctype==2 || it.ctype==3))
+                    bc=0.6;
+                    obj.LastFPChargeUsed=t;
+                    obj.buffs.FP.Charges=obj.buffs.FP.Charges-1;
+                end
+                    
+            end
+          if((it.w==1 && obj.procs.FS.LastProc+obj.procs.FS.Dur>t)||obj.autobuff==1)  %Force Synergy Bonus Dmg
               bc=bc+0.05; 
            end
           if(strcmp(it.id,'force_breach'))

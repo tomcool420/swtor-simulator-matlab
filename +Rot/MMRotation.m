@@ -1,4 +1,4 @@
-function [r,dps,apm,times,mx,mn]=MMRotation(rotation,loops,pub,stats,delay)
+function [r,dps,apm,times,mx,mn]=MMRotation(rotation,loops,pub,stats,HP)
 if(nargin<2)
     loops=1;
 end
@@ -9,8 +9,10 @@ if(nargin<4)
     stats=json.loadjson('gear/Luna6pc.json');
 end
 if(nargin<5)
-    delay=0.15;
+    %delay=0.0;
+    HP=1000000;
 end
+delay=0.0;
 r=0;
 mx=0;
 mxdps=0;
@@ -30,13 +32,16 @@ else
     %stats=json.loadjson('json/Sniper_6pc_bis.json');
 end
     for i = 1:loops
-        strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
+        %strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
         %a=DFRotationClass();
 
         a=Simulator.Marksman(data);
+        a.detailed_stats=0;
         a.stats=stats;
         a.UseLazeTarget();
         a.continue_past_hp=1;
+        a.total_HP=HP;
+        a.use_mean=1;
         for j = 1:numel(rotation)
             txt=rotation{j};
             if(strcmp(rotation{j},'Rifle Shot')||strcmp(txt,'Flurry of Bolts'))

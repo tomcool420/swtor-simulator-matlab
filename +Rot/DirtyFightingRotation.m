@@ -1,9 +1,15 @@
-function [r,dps,dmg,apm,times,mx,mn]=DirtyFightingRotation(rotation,loops,pub)
+function [r,dps,dmg,apm,times,mx,mn]=DirtyFightingRotation(rotation,loops,pub,stats,HP)
 if(nargin<2)
     loops=1;
 end
 if(nargin<3)
     pub=1;
+end
+if(nargin<4)
+    stats=json.loadjson('gear/Luna6pc.json');
+end
+if(nargin<5)
+    HP=1e6;
 end
 r=0;
 mx=0;
@@ -19,11 +25,11 @@ strl=0;
 idx=0;
 if(pub)
     data=json.loadjson('json/DirtyFighting.json');
-     stats=json.loadjson('gear/LunaStats.json');
+     %stats=json.loadjson('gear/LunaStats.json');
 %    stats=loadjson('json/LunaStats.json');
 else
     data=json.loadjson('json/Virulence.json');
-    stats=json.loadjson('json/Sniper_6pc_bis.json');
+    %stats=json.loadjson('json/Sniper_6pc_bis.json');
 end
     for i = 1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
@@ -34,6 +40,10 @@ end
         a.raid_armor_pen=0.2;
         a.stats=stats;
         %a.UseLazeTarget();
+        a.continue_past_hp=1;
+        a.total_HP=HP;
+        a.use_mean=1;
+        a.detailed_stats=0;
         for j = 1:numel(rotation)
             txt=rotation{j};
             if(strcmp(rotation{j},'Rifle Shot')||strcmp(txt,'Flurry of Bolts'))

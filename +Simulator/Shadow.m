@@ -10,7 +10,7 @@ classdef Shadow < Simulator.BaseSimulator
     methods
         function UseForcePotency(obj)
             if(obj.nextCast>=obj.buffs.FP.Available)
-                obj.buffs.FP.Available=obj.nextCast+(obj.buffs.FP.CD-15*obj.stats.pc4)/(1+obj.stats.Alacrity);
+                obj.buffs.FP.Available=obj.nextCast;%+(obj.buffs.FP.CD-15*obj.stats.pc4)/(1+obj.stats.Alacrity);
                 obj.buffs.FP.LastUsed=obj.nextCast;
                 obj.buffs.FP.Charges=obj.FP_charge_amount;
                 obj.activations{end+1}={obj.nextCast,'Force Potency'};

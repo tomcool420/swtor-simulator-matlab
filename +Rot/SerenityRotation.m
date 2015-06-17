@@ -1,10 +1,19 @@
-function [ r,dps,dmg,times,apm,mx,mn ] = SerenityRotation( rotation ,loops)
+function [ r,dps,dmg,times,apm,mx,mn ] = SerenityRotation( rotation,loops,pub,stats,HP)
 %SERENITYROTATION Summary of this function goes here
 %   Detailed explanation goes here
+
 if(nargin<2)
     loops=1;
 end
-
+if(nargin<3)
+    pub=1;
+end
+if(nargin<4)
+    stats=Simulator.StatCalculator(json.loadjson('gear/Mu2_base_6pc.json'));
+end
+if(nargin<5)
+    HP=1e6;
+end
 r=0;
 mx=0;
 mxdps=0;
@@ -17,7 +26,7 @@ times=zeros(1,loops);
 dmg=zeros(1,loops);
 strl=0;
 data=json.loadjson('json/Serenity.json');
-stats=json.loadjson('gear/MulletShadow204.json');
+%stats=json.loadjson('gear/MulletShadow204.json');
 %stats=json.loadjson('json/ShTest.json');
     for i =1:loops
         strl=printclean(strl,'Rotation %.0f/%.0f',i,loops);
@@ -28,7 +37,7 @@ stats=json.loadjson('gear/MulletShadow204.json');
         a.raid_armor_pen=0.2;
         a.stats=stats;
         a.continue_past_hp=1;
-        a.total_HP=1062100;
+        a.total_HP=HP;
         for j = 1:numel(rotation)
             txt=rotation{j};
             if(strcmp(rotation{j},'Saber Strike')||strcmp(txt,'Flurry of Bolts'))
