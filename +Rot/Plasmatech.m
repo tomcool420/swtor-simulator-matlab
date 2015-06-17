@@ -23,7 +23,7 @@ classdef Plasmatech < Rot.BaseRotation
             s.total_HP=opts.total_HP;
             s.stats=obj.stats;
             if(opts.preload_buffs)
-                a.a.PreloadPulseGenerator;;
+                a.a.PreloadPulseGenerator;
                 a.PreloadMissiles;
             end
             %if(opts.use_armor_debuff)
