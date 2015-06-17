@@ -8,6 +8,7 @@ classdef RotOptions < handle
         use_mean=0;
         use_armor_debuff=1;
         preload_buffs=1;
+        detailed_stats=1;
     end
     
     methods

@@ -29,10 +29,10 @@ classdef Saboteur <Rot.BaseRotation
                s.raid_armor_pen=0.2;
            end
            s.use_mean=opts.use_mean;
+           s.detailed_stats=opts.detailed_stats;
         end
         function a = RunRotation(obj,rotation)
             a=obj.SetupSimulator();
-            a.detailed_stats=0;
             for j = 1:numel(rotation)
                 txt=rotation{j};
                 if(strcmp(rotation{j},'Rifle Shot')||strcmp(txt,'Flurry of Bolts'))
