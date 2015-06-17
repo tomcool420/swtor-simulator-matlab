@@ -23,7 +23,7 @@ classdef Serenity <Rot.BaseRotation
             s.total_HP=opts.total_HP;
             s.stats=obj.stats;
             if(opts.preload_buffs)
-                s.autocrit_charges=1;
+                s.buffs.FP.Charges=3;
             end
             if(opts.use_armor_debuff)
                 s.raid_armor_pen=0.2;
@@ -33,7 +33,47 @@ classdef Serenity <Rot.BaseRotation
         function a = RunRotation(obj,rotation)
             a=obj.SetupSimulator();
             a.detailed_stats=0;
-            
+            for j = 1:numel(rotation)
+                txt=rotation{j};
+                if(strcmp(rotation{j},'Saber Strike')||strcmp(txt,'Flurry of Bolts'))
+                    a.UseSaberStrike();
+                elseif(strcmp(rotation{j},'Serenity Strike'))
+                    [isCast,CDLeft]=a.UseSerenityStrike();
+                    if(~isCast)
+                       a.activations{end+1}={a.nextCast,'Delayed Serenity Strike'};
+                       a.AddDelay(CDLeft);
+                       a.UseCoveredEscape();
+                   end
+                elseif(strcmp(rotation{j},'Force Breach'))
+                    a.UseForceBreach();
+                elseif(strcmp(rotation{j},'Sever Force'))
+                    a.UseSeverForce();
+                elseif(strcmp(rotation{j},'Vanquish'))
+                    a.AddDelay(0.4);
+                    [isCast,CDLeft]=a.UseVanquish();
+                elseif(strcmp(rotation{j},'Double Strike'))
+                    a.UseDoubleStrike();
+                elseif(strcmp(rotation{j},'Force in Balance'))
+                    [isCast,CDLeft]=a.UseForceInBalance();
+                    if(~isCast)
+                        a.activations{end+1}={a.nextCast,'Delayed Force In Balance'};
+                        a.AddDelay(CDLeft);
+                        a.UseCoveredEscape();
+                    end
+                elseif(strcmp(rotation{j},'Spinning Strike'))
+                    a.UseSpinningStrike();
+                elseif(max(size(strfind(txt,'Adrenal')))>0)
+                    a.UseAdrenal();
+                elseif(strcmp(rotation{j},'Force Potency'))
+                    a.UseForcePotency();
+                elseif(strcmp(rotation{j},'Battle Readiness'))
+                    a.UseBattleReadiness();
+                else
+                    a.extra_abilities=a.extra_abilities+1;
+                    %disp(['unknown ' txt]);
+                end
+                
+            end
         end
         
     end

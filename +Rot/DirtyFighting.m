@@ -23,7 +23,7 @@ classdef DirtyFighting <Rot.BaseRotation
            s.total_HP=opts.total_HP;
            s.stats=obj.stats;
            if(opts.preload_buffs)
-               s.autocrit_charges=1;
+               s.autocrit_charges=1+s.stats.pc6;
            end
            if(opts.use_armor_debuff)
                s.raid_armor_pen=0.2;
