@@ -13,6 +13,15 @@ classdef RotOptions < handle
     
     methods
         function obj=RotOptions(cont_past,hp,mean)
+            if(nargin<3)
+                mean=0;
+            end
+            if(nargin<2)
+                hp=1e6;
+            end
+            if(nargin<1)
+                cont_past=0;
+            end
            obj.continue_past_hp=cont_past;
            obj.total_HP=hp;
            obj.use_mean=mean;

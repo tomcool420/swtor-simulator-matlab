@@ -18,7 +18,7 @@ classdef DirtyFighting <Rot.BaseRotation
         end
         function s=SetupSimulator(obj)
             s = Simulator.Virulence(obj.abilities);
-            opts=obj.opts;
+            opts=obj.options;
             s.continue_past_hp=opts.continue_past_hp;
             s.total_HP=opts.total_HP;
             s.stats=obj.stats;
